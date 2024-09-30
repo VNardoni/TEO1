@@ -1,13 +1,9 @@
-package FlexLexico;
+package com.Lexico.FlexLexico;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-/**
- *
- * @author Eugenia
- */
 public class FlexLexico {
 
     public static void main(String[] args) throws IOException {
