@@ -57,20 +57,22 @@ public class VistaGrafica {
 
 		textArea = new JTextArea();
 		JScrollPane scrollPane = new JScrollPane(textArea);
-		scrollPane.setBounds(28, 173, 750, 543);
+		scrollPane.setBounds(28, 117, 750, 599);
 		contenedorPrincipal.add(scrollPane);
 
 		JButton btnCargarArchivo = new JButton("Cargar archivo");
-		btnCargarArchivo.setBounds(285, 120, 234, 42);
+		btnCargarArchivo.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		btnCargarArchivo.setBounds(286, 64, 234, 42);
 		contenedorPrincipal.add(btnCargarArchivo);
 
-		JLabel lblTitulo = new JLabel("Analizador Lexico Grafico");
+		JLabel lblTitulo = new JLabel("Analizador Léxico Gráfico");
 		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTitulo.setFont(new Font("Segoe UI Semibold", Font.BOLD, 20));
-		lblTitulo.setBounds(139, 51, 527, 42);
+		lblTitulo.setFont(new Font("Segoe UI Semibold", Font.BOLD, 30));
+		lblTitulo.setBounds(140, 11, 527, 42);
 		contenedorPrincipal.add(lblTitulo);
 
 		JButton btnAnalizar = new JButton("Analizar");
+		btnAnalizar.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		btnAnalizar.setBounds(286, 743, 234, 48);
 		contenedorPrincipal.add(btnAnalizar);
 
@@ -114,10 +116,10 @@ public class VistaGrafica {
 	 */
 	private void guardarCambios() {
 		File file = new File("prueba.txt");
-			try (FileWriter writer = new FileWriter(file)) {
-				textArea.write(writer); // Guardar el contenido del JTextArea en el archivo
-			} catch (IOException e) {
-				JOptionPane.showMessageDialog(frame, "Error al guardar el archivo", "Error", JOptionPane.ERROR_MESSAGE);
-			}
+		try (FileWriter writer = new FileWriter(file)) {
+			textArea.write(writer); // Guardar el contenido del JTextArea en el archivo
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(frame, "Error al guardar el archivo", "Error", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 }
