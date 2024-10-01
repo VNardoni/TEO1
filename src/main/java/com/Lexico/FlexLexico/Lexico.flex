@@ -26,56 +26,56 @@ WRITE = "WRITE"({ID}|{CONST_NUM_INT}|{CONST_NUM_REAL}|{CONST_STRING}|{CONST_BASE
 %%
 
 <YYINITIAL> {
-    "WHILE" { System.out.println("TOKEN: WHILE"); }
-    "IF" { System.out.println("TOKEN: IF"); }
-    "THEN" { System.out.println("TOKEN: THEN"); }
-    "ELSE" { System.out.println("TOKEN: ELSE"); }
-    "ENDIF" { System.out.println("TOKEN: ENDIF"); }
-    "WRITE" { System.out.println("TOKEN: WRITE"); }
-    "NOT" { System.out.println("TOKEN: NOT"); }
-    "AND" { System.out.println("TOKEN: AND"); }
-    "OR" { System.out.println("TOKEN: OR"); }
-    "DECLARE.SECTION" { System.out.println("TOKEN: DECLARE.SECTION"); }
-    "ENDDECLARE.SECTION" { System.out.println("TOKEN: ENDDECLARE.SECTION"); }
-    "PROGRAM.SECTION" { System.out.println("TOKEN: PROGRAM.SECTION"); }
-    "ENDPROGRAM.SECTION" { System.out.println("TOKEN: ENDPROGRAM.SECTION"); }
-    "AsigComp" { System.out.println("TOKEN: AsigComp"); }
-    "FLOAT" { System.out.println("TOKEN: FLOAT"); }
-    "INT" { System.out.println("TOKEN: INT"); }
-    "STRING" { System.out.println("TOKEN: STRING"); }
+    "WHILE" { return new Symbol(1, "TOKEN: WHILE"); }
+    "IF" { return new Symbol(2, "TOKEN: IF"); }
+    "THEN" { return new Symbol(3, "TOKEN: THEN"); }
+    "ELSE" { return new Symbol(4, "TOKEN: ELSE"); }
+    "ENDIF" { return new Symbol(5, "TOKEN: ENDIF"); }
+    "WRITE" { return new Symbol(6, "TOKEN: WRITE"); }
+    "NOT" { return new Symbol(7, "TOKEN: NOT"); }
+    "AND" { return new Symbol(8, "TOKEN: AND"); }
+    "OR" { return new Symbol(9, "TOKEN: OR"); }
+    "DECLARE.SECTION" { return new Symbol(10, "TOKEN: DECLARE.SECTION"); }
+    "ENDDECLARE.SECTION" { return new Symbol(11, "TOKEN: ENDDECLARE.SECTION"); }
+    "PROGRAM.SECTION" { return new Symbol(12, "TOKEN: PROGRAM.SECTION"); }
+    "ENDPROGRAM.SECTION" { return new Symbol(13, "TOKEN: ENDPROGRAM.SECTION"); }
+    "AsigComp" { return new Symbol(14, "TOKEN: AsigComp"); }
+    "FLOAT" { return new Symbol(15, "TOKEN: FLOAT"); }
+    "INT" { return new Symbol(16, "TOKEN: INT"); }
+    "STRING" { return new Symbol(17, "TOKEN: STRING"); }
 
-    "\"" { System.out.println("TOKEN: Comillas"); }
-    "{" { System.out.println("TOKEN: Llave abierta"); }
-    "}" { System.out.println("TOKEN: Llave cerrada"); }
-    "(" { System.out.println("TOKEN: Paréntesis abierto"); }
-    ")" { System.out.println("TOKEN: Paréntesis cerrado"); }
-    "[" { System.out.println("TOKEN: Corchetes abierto"); }
-    "]" { System.out.println("TOKEN: Corchetes cerrado"); }
-    "::=" { System.out.println("TOKEN: Asignación"); }
-    "=" { System.out.println("TOKEN: Asignación simple"); }
-    "//*" { System.out.println("TOKEN: Abre bloque comentario"); }
-    "*//" { System.out.println("TOKEN Cierra bloque comentario"); }
-    "<" { System.out.println("TOKEN: Menor que"); }
-    ">" { System.out.println("TOKEN: Mayor que"); }
-    ">=" { System.out.println("TOKEN: Mayor o igual"); }
-    "<=" { System.out.println("TOKEN: Menor o igual"); }
-    "==" { System.out.println("TOKEN: Igual"); }
-    "!=" { System.out.println("TOKEN Diferente"); }
-    ":=" { System.out.println("TOKEN: Asignación múltiple"); }
-    ";" { System.out.println("TOKEN: Punto y coma"); }
-    ":" { System.out.println("TOKEN: Dos puntos"); }
-    "," { System.out.println("TOKEN: Coma"); }
-    "." { System.out.println("TOKEN: Punto"); }
-    "+" { System.out.println("TOKEN: Suma"); }
-    "-" { System.out.println("TOKEN: Resta"); }
-    "*" { System.out.println("TOKEN: Multiplicación"); }
-    "/" { System.out.println("TOKEN: División"); }
+    "\"" { return new Symbol(18, "TOKEN: Comillas"); }
+    "{" { return new Symbol(19, "TOKEN: Llave abierta"); }
+    "}" { return new Symbol(20, "TOKEN: Llave cerrada"); }
+    "(" { return new Symbol(21, "TOKEN: Paréntesis abierto"); }
+    ")" { return new Symbol(22, "TOKEN: Paréntesis cerrado"); }
+    "[" { return new Symbol(23, "TOKEN: Corchetes abierto"); }
+    "]" { return new Symbol(24, "TOKEN: Corchetes cerrado"); }
+    "::=" { return new Symbol(25, "TOKEN: Asignación"); }
+    "=" { return new Symbol(26, "TOKEN: Asignación simple"); }
+    "//*" { return new Symbol(27, "TOKEN: Abre bloque comentario"); }
+    "*//" { return new Symbol(28, "TOKEN Cierra bloque comentario"); }
+    "<" { return new Symbol(29, "TOKEN: Menor que"); }
+    ">" { return new Symbol(30, "TOKEN: Mayor que"); }
+    ">=" { return new Symbol(31, "TOKEN: Mayor o igual"); }
+    "<=" { return new Symbol(32, "TOKEN: Menor o igual"); }
+    "==" { return new Symbol(33, "TOKEN: Igual"); }
+    "!=" { return new Symbol(34, "TOKEN Diferente"); }
+    ":=" { return new Symbol(35, "TOKEN: Asignación múltiple"); }
+    ";" { return new Symbol(36, "TOKEN: Punto y coma"); }
+    ":" { return new Symbol(37, "TOKEN: Dos puntos"); }
+    "," { return new Symbol(38, "TOKEN: Coma"); }
+    "." { return new Symbol(39, "TOKEN: Punto"); }
+    "+" { return new Symbol(40, "TOKEN: Suma"); }
+    "-" { return new Symbol(41, "TOKEN: Resta"); }
+    "*" { return new Symbol(42, "TOKEN: Multiplicación"); }
+    "/" { return new Symbol(43, "TOKEN: División"); }
 
-    {ID} { System.out.println("TOKEN: ID"); }
-    {CONST_NUM_INT} { System.out.println("TOKEN: Entero"); }
-    {CONST_NUM_REAL} { System.out.println("TOKEN: Real"); }
-    {CONST_STRING} { System.out.println("TOKEN: String"); }
-    {CONST_BASE_BIN} { System.out.println("TOKEN: Número binario"); }
+    {ID} { return new Symbol(44, "TOKEN: ID"); }
+    {CONST_NUM_INT} { return new Symbol(45, "TOKEN: Entero"); }
+    {CONST_NUM_REAL} { return new Symbol(46, "TOKEN: Real"); }
+    {CONST_STRING} { return new Symbol(47, "TOKEN: String"); }
+    {CONST_BASE_BIN} { return new Symbol(48, "TOKEN: Número binario"); }
     {ESPACIO} { }
 
 }

@@ -17,6 +17,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.util.ArrayList;
 import javax.swing.SwingConstants;
 
 import com.Lexico.FlexLexico.FlexLexico;
@@ -26,6 +27,7 @@ public class VistaGrafica {
 	private JFrame frame;
 	private JTextArea textArea;
 	private File archivoSeleccionado;
+	private FlexLexico flexLexico = new FlexLexico();
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -45,6 +47,7 @@ public class VistaGrafica {
 	}
 
 	private void initialize() {
+		ArrayList<String> tokenList = new ArrayList<>();
 		frame = new JFrame();
 		frame.setBounds(100, 100, 822, 860);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -86,7 +89,9 @@ public class VistaGrafica {
 			public void actionPerformed(ActionEvent e) {
 				guardarCambios();
 				try {
-					FlexLexico.analizar();
+					tokenList.clear();
+					tokenList.addAll(flexLexico.analizar());
+					System.out.println(tokenList);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
