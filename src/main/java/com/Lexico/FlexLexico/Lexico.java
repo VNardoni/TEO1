@@ -780,242 +780,242 @@ public class Lexico implements java_cup.runtime.Scanner {
           // fall through
           case 52: break;
           case 3:
-            { return new Symbol(18, "TOKEN: Comillas");
+            { return new Symbol(18, "Comillas");
             }
           // fall through
           case 53: break;
           case 4:
-            { return new Symbol(21, "TOKEN: Paréntesis abierto");
+            { return new Symbol(21, "Paréntesis abierto");
             }
           // fall through
           case 54: break;
           case 5:
-            { return new Symbol(22, "TOKEN: Paréntesis cerrado");
+            { return new Symbol(22, "Paréntesis cerrado");
             }
           // fall through
           case 55: break;
           case 6:
-            { return new Symbol(42, "TOKEN: Multiplicación");
+            { return new Symbol(42, "Multiplicación");
             }
           // fall through
           case 56: break;
           case 7:
-            { return new Symbol(40, "TOKEN: Suma");
+            { return new Symbol(40, "Suma");
             }
           // fall through
           case 57: break;
           case 8:
-            { return new Symbol(38, "TOKEN: Coma");
+            { return new Symbol(38, "Coma");
             }
           // fall through
           case 58: break;
           case 9:
-            { return new Symbol(41, "TOKEN: Resta");
+            { return new Symbol(41, "Resta");
             }
           // fall through
           case 59: break;
           case 10:
-            { return new Symbol(39, "TOKEN: Punto");
+            { return new Symbol(39, "Punto");
             }
           // fall through
           case 60: break;
           case 11:
-            { return new Symbol(43, "TOKEN: División");
+            { return new Symbol(43, "División");
             }
           // fall through
           case 61: break;
           case 12:
-            { return new Symbol(45, "TOKEN: Entero");
+            { return new Symbol(45, "CTE_E");
             }
           // fall through
           case 62: break;
           case 13:
-            { return new Symbol(37, "TOKEN: Dos puntos");
+            { return new Symbol(37, "Dos puntos");
             }
           // fall through
           case 63: break;
           case 14:
-            { return new Symbol(36, "TOKEN: Punto y coma");
+            { return new Symbol(36, "Punto y coma");
             }
           // fall through
           case 64: break;
           case 15:
-            { return new Symbol(29, "TOKEN: Menor que");
+            { return new Symbol(29, "Menor que");
             }
           // fall through
           case 65: break;
           case 16:
-            { return new Symbol(26, "TOKEN: Asignación simple");
+            { return new Symbol(26, "Asignación simple");
             }
           // fall through
           case 66: break;
           case 17:
-            { return new Symbol(30, "TOKEN: Mayor que");
+            { return new Symbol(30, "Mayor que");
             }
           // fall through
           case 67: break;
           case 18:
-            { return new Symbol(23, "TOKEN: Corchetes abierto");
+            { return new Symbol(23, "Corchetes abierto");
             }
           // fall through
           case 68: break;
           case 19:
-            { return new Symbol(24, "TOKEN: Corchetes cerrado");
+            { return new Symbol(24, "Corchetes cerrado");
             }
           // fall through
           case 69: break;
           case 20:
-            { return new Symbol(44, "TOKEN: ID");
+            { return new Symbol(44, "ID");
             }
           // fall through
           case 70: break;
           case 21:
-            { return new Symbol(19, "TOKEN: Llave abierta");
+            { return new Symbol(19, "Llave abierta");
             }
           // fall through
           case 71: break;
           case 22:
-            { return new Symbol(20, "TOKEN: Llave cerrada");
+            { return new Symbol(20, "Llave cerrada");
             }
           // fall through
           case 72: break;
           case 23:
-            { return new Symbol(34, "TOKEN Diferente");
+            { return new Symbol(34, "Diferente");
             }
           // fall through
           case 73: break;
           case 24:
-            { return new Symbol(47, "TOKEN: String");
+            { return new Symbol(47, "CTE_STR");
             }
           // fall through
           case 74: break;
           case 25:
-            { return new Symbol(46, "TOKEN: Real");
+            { return new Symbol(46, "CTE_F");
             }
           // fall through
           case 75: break;
           case 26:
-            { return new Symbol(35, "TOKEN: Asignación múltiple");
+            { return new Symbol(35, "Asignación múltiple");
             }
           // fall through
           case 76: break;
           case 27:
-            { return new Symbol(32, "TOKEN: Menor o igual");
+            { return new Symbol(32, "Menor o igual");
             }
           // fall through
           case 77: break;
           case 28:
-            { return new Symbol(33, "TOKEN: Igual");
+            { return new Symbol(33, "Igual");
             }
           // fall through
           case 78: break;
           case 29:
-            { return new Symbol(31, "TOKEN: Mayor o igual");
+            { return new Symbol(31, "Mayor o igual");
             }
           // fall through
           case 79: break;
           case 30:
-            { return new Symbol(2, "TOKEN: IF");
+            { return new Symbol(2, "IF");
             }
           // fall through
           case 80: break;
           case 31:
-            { return new Symbol(9, "TOKEN: OR");
+            { return new Symbol(9, "OR");
             }
           // fall through
           case 81: break;
           case 32:
-            { return new Symbol(28, "TOKEN Cierra bloque comentario");
+            { return new Symbol(28, "Cierra bloque comentario");
             }
           // fall through
           case 82: break;
           case 33:
-            { return new Symbol(27, "TOKEN: Abre bloque comentario");
+            { return new Symbol(27, "Abre bloque comentario");
             }
           // fall through
           case 83: break;
           case 34:
-            { return new Symbol(48, "TOKEN: Número binario");
+            { return new Symbol(48, "CTE_B");
             }
           // fall through
           case 84: break;
           case 35:
-            { return new Symbol(25, "TOKEN: Asignación");
+            { return new Symbol(25, "Asignación");
             }
           // fall through
           case 85: break;
           case 36:
-            { return new Symbol(8, "TOKEN: AND");
+            { return new Symbol(8, "AND");
             }
           // fall through
           case 86: break;
           case 37:
-            { return new Symbol(16, "TOKEN: INT");
+            { return new Symbol(16, "INT");
             }
           // fall through
           case 87: break;
           case 38:
-            { return new Symbol(7, "TOKEN: NOT");
+            { return new Symbol(7, "NOT");
             }
           // fall through
           case 88: break;
           case 39:
-            { return new Symbol(4, "TOKEN: ELSE");
+            { return new Symbol(4, "ELSE");
             }
           // fall through
           case 89: break;
           case 40:
-            { return new Symbol(3, "TOKEN: THEN");
+            { return new Symbol(3, "THEN");
             }
           // fall through
           case 90: break;
           case 41:
-            { return new Symbol(5, "TOKEN: ENDIF");
+            { return new Symbol(5, "ENDIF");
             }
           // fall through
           case 91: break;
           case 42:
-            { return new Symbol(15, "TOKEN: FLOAT");
+            { return new Symbol(15, "FLOAT");
             }
           // fall through
           case 92: break;
           case 43:
-            { return new Symbol(1, "TOKEN: WHILE");
+            { return new Symbol(1, "WHILE");
             }
           // fall through
           case 93: break;
           case 44:
-            { return new Symbol(6, "TOKEN: WRITE");
+            { return new Symbol(6, "WRITE");
             }
           // fall through
           case 94: break;
           case 45:
-            { return new Symbol(17, "TOKEN: STRING");
+            { return new Symbol(17, "STRING");
             }
           // fall through
           case 95: break;
           case 46:
-            { return new Symbol(14, "TOKEN: AsigComp");
+            { return new Symbol(14, "AsigComp");
             }
           // fall through
           case 96: break;
           case 47:
-            { return new Symbol(10, "TOKEN: DECLARE.SECTION");
+            { return new Symbol(10, "DECLARE.SECTION");
             }
           // fall through
           case 97: break;
           case 48:
-            { return new Symbol(12, "TOKEN: PROGRAM.SECTION");
+            { return new Symbol(12, "PROGRAM.SECTION");
             }
           // fall through
           case 98: break;
           case 49:
-            { return new Symbol(11, "TOKEN: ENDDECLARE.SECTION");
+            { return new Symbol(11, "ENDDECLARE.SECTION");
             }
           // fall through
           case 99: break;
           case 50:
-            { return new Symbol(13, "TOKEN: ENDPROGRAM.SECTION");
+            { return new Symbol(13, "ENDPROGRAM.SECTION");
             }
           // fall through
           case 100: break;

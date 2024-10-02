@@ -26,56 +26,56 @@ WRITE = "WRITE"({ID}|{CONST_NUM_INT}|{CONST_NUM_REAL}|{CONST_STRING}|{CONST_BASE
 %%
 
 <YYINITIAL> {
-    "WHILE" { return new Symbol(1, "TOKEN: WHILE"); }
-    "IF" { return new Symbol(2, "TOKEN: IF"); }
-    "THEN" { return new Symbol(3, "TOKEN: THEN"); }
-    "ELSE" { return new Symbol(4, "TOKEN: ELSE"); }
-    "ENDIF" { return new Symbol(5, "TOKEN: ENDIF"); }
-    "WRITE" { return new Symbol(6, "TOKEN: WRITE"); }
-    "NOT" { return new Symbol(7, "TOKEN: NOT"); }
-    "AND" { return new Symbol(8, "TOKEN: AND"); }
-    "OR" { return new Symbol(9, "TOKEN: OR"); }
-    "DECLARE.SECTION" { return new Symbol(10, "TOKEN: DECLARE.SECTION"); }
-    "ENDDECLARE.SECTION" { return new Symbol(11, "TOKEN: ENDDECLARE.SECTION"); }
-    "PROGRAM.SECTION" { return new Symbol(12, "TOKEN: PROGRAM.SECTION"); }
-    "ENDPROGRAM.SECTION" { return new Symbol(13, "TOKEN: ENDPROGRAM.SECTION"); }
-    "AsigComp" { return new Symbol(14, "TOKEN: AsigComp"); }
-    "FLOAT" { return new Symbol(15, "TOKEN: FLOAT"); }
-    "INT" { return new Symbol(16, "TOKEN: INT"); }
-    "STRING" { return new Symbol(17, "TOKEN: STRING"); }
+    "WHILE" { return new Symbol(1, "WHILE"); }
+    "IF" { return new Symbol(2, "IF"); }
+    "THEN" { return new Symbol(3, "THEN"); }
+    "ELSE" { return new Symbol(4, "ELSE"); }
+    "ENDIF" { return new Symbol(5, "ENDIF"); }
+    "WRITE" { return new Symbol(6, "WRITE"); }
+    "NOT" { return new Symbol(7, "NOT"); }
+    "AND" { return new Symbol(8, "AND"); }
+    "OR" { return new Symbol(9, "OR"); }
+    "DECLARE.SECTION" { return new Symbol(10, "DECLARE.SECTION"); }
+    "ENDDECLARE.SECTION" { return new Symbol(11, "ENDDECLARE.SECTION"); }
+    "PROGRAM.SECTION" { return new Symbol(12, "PROGRAM.SECTION"); }
+    "ENDPROGRAM.SECTION" { return new Symbol(13, "ENDPROGRAM.SECTION"); }
+    "AsigComp" { return new Symbol(14, "AsigComp"); }
+    "FLOAT" { return new Symbol(15, "FLOAT"); }
+    "INT" { return new Symbol(16, "INT"); }
+    "STRING" { return new Symbol(17, "STRING"); }
 
-    "\"" { return new Symbol(18, "TOKEN: Comillas"); }
-    "{" { return new Symbol(19, "TOKEN: Llave abierta"); }
-    "}" { return new Symbol(20, "TOKEN: Llave cerrada"); }
-    "(" { return new Symbol(21, "TOKEN: Paréntesis abierto"); }
-    ")" { return new Symbol(22, "TOKEN: Paréntesis cerrado"); }
-    "[" { return new Symbol(23, "TOKEN: Corchetes abierto"); }
-    "]" { return new Symbol(24, "TOKEN: Corchetes cerrado"); }
-    "::=" { return new Symbol(25, "TOKEN: Asignación"); }
-    "=" { return new Symbol(26, "TOKEN: Asignación simple"); }
-    "//*" { return new Symbol(27, "TOKEN: Abre bloque comentario"); }
-    "*//" { return new Symbol(28, "TOKEN Cierra bloque comentario"); }
-    "<" { return new Symbol(29, "TOKEN: Menor que"); }
-    ">" { return new Symbol(30, "TOKEN: Mayor que"); }
-    ">=" { return new Symbol(31, "TOKEN: Mayor o igual"); }
-    "<=" { return new Symbol(32, "TOKEN: Menor o igual"); }
-    "==" { return new Symbol(33, "TOKEN: Igual"); }
-    "!=" { return new Symbol(34, "TOKEN Diferente"); }
-    ":=" { return new Symbol(35, "TOKEN: Asignación múltiple"); }
-    ";" { return new Symbol(36, "TOKEN: Punto y coma"); }
-    ":" { return new Symbol(37, "TOKEN: Dos puntos"); }
-    "," { return new Symbol(38, "TOKEN: Coma"); }
-    "." { return new Symbol(39, "TOKEN: Punto"); }
-    "+" { return new Symbol(40, "TOKEN: Suma"); }
-    "-" { return new Symbol(41, "TOKEN: Resta"); }
-    "*" { return new Symbol(42, "TOKEN: Multiplicación"); }
-    "/" { return new Symbol(43, "TOKEN: División"); }
+    "\"" { return new Symbol(18, "Comillas"); }
+    "{" { return new Symbol(19, "Llave abierta"); }
+    "}" { return new Symbol(20, "Llave cerrada"); }
+    "(" { return new Symbol(21, "Paréntesis abierto"); }
+    ")" { return new Symbol(22, "Paréntesis cerrado"); }
+    "[" { return new Symbol(23, "Corchetes abierto"); }
+    "]" { return new Symbol(24, "Corchetes cerrado"); }
+    "::=" { return new Symbol(25, "Asignación"); }
+    "=" { return new Symbol(26, "Asignación simple"); }
+    "//*" { return new Symbol(27, "Abre bloque comentario"); }
+    "*//" { return new Symbol(28, "Cierra bloque comentario"); }
+    "<" { return new Symbol(29, "Menor que"); }
+    ">" { return new Symbol(30, "Mayor que"); }
+    ">=" { return new Symbol(31, "Mayor o igual"); }
+    "<=" { return new Symbol(32, "Menor o igual"); }
+    "==" { return new Symbol(33, "Igual"); }
+    "!=" { return new Symbol(34, "Diferente"); }
+    ":=" { return new Symbol(35, "Asignación múltiple"); }
+    ";" { return new Symbol(36, "Punto y coma"); }
+    ":" { return new Symbol(37, "Dos puntos"); }
+    "," { return new Symbol(38, "Coma"); }
+    "." { return new Symbol(39, "Punto"); }
+    "+" { return new Symbol(40, "Suma"); }
+    "-" { return new Symbol(41, "Resta"); }
+    "*" { return new Symbol(42, "Multiplicación"); }
+    "/" { return new Symbol(43, "División"); }
 
-    {ID} { return new Symbol(44, "TOKEN: ID"); }
-    {CONST_NUM_INT} { return new Symbol(45, "TOKEN: Entero"); }
-    {CONST_NUM_REAL} { return new Symbol(46, "TOKEN: Real"); }
-    {CONST_STRING} { return new Symbol(47, "TOKEN: String"); }
-    {CONST_BASE_BIN} { return new Symbol(48, "TOKEN: Número binario"); }
+    {ID} { return new Symbol(44, "ID"); }
+    {CONST_NUM_INT} { return new Symbol(45, "CTE_E"); }
+    {CONST_NUM_REAL} { return new Symbol(46, "CTE_F"); }
+    {CONST_STRING} { return new Symbol(47, "CTE_STR"); }
+    {CONST_BASE_BIN} { return new Symbol(48, "CTE_B"); }
     {ESPACIO} { }
 
 }

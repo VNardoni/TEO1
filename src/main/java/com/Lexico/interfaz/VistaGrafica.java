@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -19,15 +18,17 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import java.util.ArrayList;
 import javax.swing.SwingConstants;
+import java.awt.Color;
 
 import com.Lexico.FlexLexico.FlexLexico;
+import com.Lexico.FlexLexico.TokenObject;
 
 public class VistaGrafica {
 
 	private JFrame frame;
-	private JTextArea textArea;
+	private JTextArea inputTextArea;
+	private JTextArea consoleArea;
 	private File archivoSeleccionado;
-	private FlexLexico flexLexico = new FlexLexico();
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -47,21 +48,30 @@ public class VistaGrafica {
 	}
 
 	private void initialize() {
-		ArrayList<String> tokenList = new ArrayList<>();
+		ArrayList<TokenObject> tokenList = new ArrayList<TokenObject>();
 		frame = new JFrame();
 		frame.setBounds(100, 100, 822, 860);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
 		JPanel contenedorPrincipal = new JPanel();
-		contenedorPrincipal.setBounds(0, 0, 806, 821);
+		contenedorPrincipal.setBounds(0, 0, 806, 800);
 		frame.getContentPane().add(contenedorPrincipal);
 		contenedorPrincipal.setLayout(null);
 
-		textArea = new JTextArea();
-		JScrollPane scrollPane = new JScrollPane(textArea);
-		scrollPane.setBounds(28, 117, 750, 599);
+		inputTextArea = new JTextArea();
+		JScrollPane scrollPane = new JScrollPane(inputTextArea);
+		scrollPane.setBounds(28, 120, 750, 400);
 		contenedorPrincipal.add(scrollPane);
+
+		consoleArea = new JTextArea();
+		consoleArea.setEditable(false);
+		consoleArea.setBackground(new Color(30, 30, 30));
+		consoleArea.setForeground(Color.GREEN);
+		consoleArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+		JScrollPane consoleScrollPane = new JScrollPane(consoleArea);
+		consoleScrollPane.setBounds(28, 530, 750, 200);
+		contenedorPrincipal.add(consoleScrollPane);
 
 		JButton btnCargarArchivo = new JButton("Cargar archivo");
 		btnCargarArchivo.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -74,9 +84,14 @@ public class VistaGrafica {
 		lblTitulo.setBounds(140, 11, 527, 42);
 		contenedorPrincipal.add(lblTitulo);
 
+		JButton btnClear = new JButton("Limpiar");
+		btnClear.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		btnClear.setBounds(200, 743, 180, 40);
+		contenedorPrincipal.add(btnClear);
+
 		JButton btnAnalizar = new JButton("Analizar");
 		btnAnalizar.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		btnAnalizar.setBounds(286, 743, 234, 48);
+		btnAnalizar.setBounds(440, 743, 180, 40);
 		contenedorPrincipal.add(btnAnalizar);
 
 		btnCargarArchivo.addActionListener(new ActionListener() {
@@ -85,13 +100,19 @@ public class VistaGrafica {
 			}
 		});
 
+		btnClear.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				inputTextArea.setText("");
+				consoleArea.setText("");
+			}
+		});
+
 		btnAnalizar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				guardarCambios();
 				try {
 					tokenList.clear();
-					tokenList.addAll(flexLexico.analizar());
-					System.out.println(tokenList);
+					tokenList.addAll(FlexLexico.analizar(inputTextArea.getText()));
+					printTokens(tokenList);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -109,7 +130,7 @@ public class VistaGrafica {
 		if (result == JFileChooser.APPROVE_OPTION) {
 			archivoSeleccionado = fileChooser.getSelectedFile(); // Guardar el archivo seleccionado
 			try (BufferedReader reader = new BufferedReader(new FileReader(archivoSeleccionado))) {
-				textArea.read(reader, null); // Cargar el contenido directamente al JTextArea
+				inputTextArea.read(reader, null); // Cargar el contenido directamente al JTextArea
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(frame, "Error al cargar el archivo", "Error", JOptionPane.ERROR_MESSAGE);
 			}
@@ -117,14 +138,13 @@ public class VistaGrafica {
 	}
 
 	/**
-	 * Método para guardar los cambios en el archivo "prueba.txt".
+	 * Método para imprimir los tokens en el JTextArea de la consola.
 	 */
-	private void guardarCambios() {
-		File file = new File("prueba.txt");
-		try (FileWriter writer = new FileWriter(file)) {
-			textArea.write(writer); // Guardar el contenido del JTextArea en el archivo
-		} catch (IOException e) {
-			JOptionPane.showMessageDialog(frame, "Error al guardar el archivo", "Error", JOptionPane.ERROR_MESSAGE);
+	private void printTokens(ArrayList<TokenObject> tokenList) {
+		StringBuilder sb = new StringBuilder();
+		for (TokenObject token : tokenList) {
+			sb.append("TOKEN: ").append(token.name()).append("\n");
 		}
+		consoleArea.setText(sb.toString());
 	}
 }
