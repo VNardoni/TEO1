@@ -3,22 +3,14 @@ package com.Lexico.interfaz;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Color;
+import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JScrollPane;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.JLabel;
-import java.awt.Font;
+import javax.swing.*;
 import java.util.ArrayList;
-import javax.swing.SwingConstants;
-import java.awt.Color;
 
 import com.Lexico.FlexLexico.FlexLexico;
 import com.Lexico.FlexLexico.TokenObject;
@@ -27,7 +19,7 @@ public class VistaGrafica {
 
 	private JFrame frame;
 	private JTextArea inputTextArea;
-	private JTextArea consoleArea;
+	private JTextPane consoleArea;
 	private File archivoSeleccionado;
 
 	public static void main(String[] args) {
@@ -64,7 +56,7 @@ public class VistaGrafica {
 		scrollPane.setBounds(28, 120, 750, 400);
 		contenedorPrincipal.add(scrollPane);
 
-		consoleArea = new JTextArea();
+		consoleArea = new JTextPane();
 		consoleArea.setEditable(false);
 		consoleArea.setBackground(new Color(30, 30, 30));
 		consoleArea.setForeground(Color.GREEN);
@@ -142,9 +134,28 @@ public class VistaGrafica {
 	 */
 	private void printTokens(ArrayList<TokenObject> tokenList) {
 		StringBuilder sb = new StringBuilder();
+		sb.append("<html><body style='color:green;'>");
 		for (TokenObject token : tokenList) {
-			sb.append("TOKEN: ").append(token.name()).append("\n");
+			if (token.name().equals("ERROR")) {
+				sb.append("<span style='color:red;'>ERROR: Caracter no válido ")
+						.append("<span style='color:orange;'>")
+						.append(token.value())
+						.append("</span>")
+						.append(" </span><br>");
+			} else {
+				sb.append("[TOKEN]: ")
+						.append("<span style='color:yellow;'>")
+						.append(token.name())
+						.append("</span>")
+						.append("&emsp;&emsp;[LEXEMA]: ")
+						.append("<span style='color:orange;'>")
+						.append(token.value())
+						.append("</span>")
+						.append("<br>");
+			}
 		}
+		sb.append("</body></html>");
+		consoleArea.setContentType("text/html");
 		consoleArea.setText(sb.toString());
 	}
 }
