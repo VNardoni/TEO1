@@ -31,6 +31,16 @@ FlexLexico is a Java-based lexical analyzer project. It reads and processes a fi
    mvn clean install
    ```
 
+## Build the JAR
+
+To build the .jar file, use the following Maven command:
+
+   ```sh
+   mvn clean package
+   ```
+
+The resulting .jar file will be located in the target directory
+
 ## Usage
 
 Run the main class to start the lexical analyzer. The UI will allow you to load the input file and display the results. The tokens will be saved in ts.txt.
