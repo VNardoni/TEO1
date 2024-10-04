@@ -41,9 +41,17 @@ To build the .jar file, use the following Maven command:
 
 The resulting .jar file will be located in the target directory
 
+## Run the JAR
+
+To run the .jar file, use the following command:
+
+   ```sh
+   java -jar .\FlexLexico-1.0.jar
+   ```
+
 ## Usage
 
-Run the main class to start the lexical analyzer. The UI will allow you to load the input file and display the results. The tokens will be saved in ts.txt.
+The UI will allow you to load the input file or write in the text area and display the results. The tokens will be saved in ts.txt.
 
 ## Authors (Grupo 3)
 
