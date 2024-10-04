@@ -5,12 +5,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Color;
 import java.awt.Font;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import com.Lexico.FlexLexico.FlexLexico;
 import com.Lexico.FlexLexico.TokenObject;
@@ -105,6 +104,7 @@ public class VistaGrafica {
 					tokenList.clear();
 					tokenList.addAll(FlexLexico.analizar(inputTextArea.getText()));
 					printTokens(tokenList);
+					saveTsFile(tokenList);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -158,4 +158,20 @@ public class VistaGrafica {
 		consoleArea.setContentType("text/html");
 		consoleArea.setText(sb.toString());
 	}
+
+	private void saveTsFile(ArrayList<TokenObject> tokenList) {
+		File file = new File("ts.txt");
+		List<String> validTokenNames = Arrays.asList("ID", "CTE_STR", "CTE_F", "CTE_E", "CTE_B");
+		StringBuilder sb = new StringBuilder();
+		sb.append("NOMBRE,TOKEN\n");
+		tokenList.stream()
+				.filter(token -> validTokenNames.contains(token.name()))
+				.forEach(token -> sb.append(token.value()).append(",").append(token.name()).append("\n"));
+		try (FileWriter writer = new FileWriter(file)) {
+			writer.write(sb.toString());
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(frame, "Error al guardar el archivo", "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
 }
