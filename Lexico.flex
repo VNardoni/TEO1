@@ -16,12 +16,9 @@ LETRA_MINUSCULA = [a-zñ]
 LETRA_MAYUSCULA = [A-ZÑ]
 LETRA = {LETRA_MINUSCULA}|{LETRA_MAYUSCULA}
 ESPACIO = [ \t\n\r\f]+
-STRING_VALOR = "\"" ~ "\""
-NUM_REAL_VALOR = {DIGITO}*"."{DIGITO}+|{DIGITO}+"."{DIGITO}*
-NUM_INT_VALOR = {DIGITO}+
-CONST_STRING = _{LETRA}+
-CONST_NUM_REAL = _({DIGITO}*"."{DIGITO}+|{DIGITO}+"."{DIGITO}*)
-CONST_NUM_INT = _{DIGITO}+
+CONST_STRING = "\"" ~ "\""
+CONST_NUM_REAL = {DIGITO}*"."{DIGITO}+|{DIGITO}+"."{DIGITO}*
+CONST_NUM_INT = {DIGITO}+
 CONST_BASE_BIN = "0b"(0|1)+
 ID = {LETRA_MINUSCULA}({LETRA}|{DIGITO}|_)*
 COMENTARIOS = "//*" ~ "//*" ~ "*//" ~ "*//" | "//*" ~ "*//"
@@ -74,15 +71,12 @@ WRITE = "WRITE" ({ID}|{CONST_NUM_INT}|{CONST_NUM_REAL}|{CONST_STRING}|{CONST_BAS
     "*"                     { return new Symbol(42, new TokenObject("Multiplicación", yytext())); }
     "/"                     { return new Symbol(43, new TokenObject("División", yytext())); }
 
-    {ID}                    { return new Symbol(44, new TokenObject("ID", yytext())); }
-    {STRING_VALOR}          { return new Symbol(45, new TokenObject("STRING_VALOR", yytext())); }
-    {NUM_REAL_VALOR}        { return new Symbol(46, new TokenObject("NUM_REAL_VALOR", yytext())); }
-    {NUM_INT_VALOR}         { return new Symbol(47, new TokenObject("NUM_INT_VALOR", yytext())); }
-    {CONST_STRING}          { return new Symbol(48, new TokenObject("CTE_STR", yytext())); }
-    {CONST_NUM_REAL}        { return new Symbol(49, new TokenObject("CTE_F", yytext())); }
-    {CONST_NUM_INT}         { return new Symbol(50, new TokenObject("CTE_E", yytext())); }
-    {CONST_BASE_BIN}        { return new Symbol(51, new TokenObject("CTE_B", yytext())); }
-    {WRITE}                 { return new Symbol(52, new TokenObject("WRITE", yytext())); }
+    {CONST_STRING}          { return new Symbol(44, new TokenObject("CTE_STR", yytext())); }
+    {CONST_NUM_REAL}        { return new Symbol(45, new TokenObject("CTE_F", yytext())); }
+    {CONST_NUM_INT}         { return new Symbol(46, new TokenObject("CTE_E", yytext())); }
+    {CONST_BASE_BIN}        { return new Symbol(47, new TokenObject("CTE_B", yytext())); }
+    {WRITE}                 { return new Symbol(48, new TokenObject("WRITE", yytext())); }
+    {ID}                    { return new Symbol(49, new TokenObject("ID", yytext())); }
     {COMENTARIOS}           { }
     {ESPACIO}               { }
 }

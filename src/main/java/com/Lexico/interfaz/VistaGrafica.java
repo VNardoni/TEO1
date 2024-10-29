@@ -160,13 +160,17 @@ public class VistaGrafica {
 	}
 
 	private void saveTsFile(ArrayList<TokenObject> tokenList) {
+		int columnWidth = 40; // Define a fixed width for each column
 		File file = new File("ts.txt");
-		List<String> validTokenNames = Arrays.asList("ID", "CTE_STR", "CTE_F", "CTE_E", "CTE_B");
+		List<String> constValidTokenNames = Arrays.asList("CTE_STR", "CTE_F", "CTE_E", "CTE_B");
 		StringBuilder sb = new StringBuilder();
-		sb.append("NOMBRE,TOKEN\n");
+		sb.append(String.format("%-" + columnWidth + "s\t%-" + columnWidth + "s\t%-" + columnWidth + "s\n", "NOMBRE", "TOKEN", "VALOR"));
 		tokenList.stream()
-				.filter(token -> validTokenNames.contains(token.name()))
-				.forEach(token -> sb.append(token.value()).append(",").append(token.name()).append("\n"));
+				.filter(token -> token.name().equals("ID"))
+				.forEach(token -> sb.append(String.format("%-" + columnWidth + "s\t%-" + columnWidth + "s\t\n", token.value(), token.name())));
+		tokenList.stream()
+				.filter(token -> constValidTokenNames.contains(token.name()))
+				.forEach(token -> sb.append(String.format("%-" + columnWidth + "s\t%-" + columnWidth + "s\t%-" + columnWidth + "s\n", "_" + token.value(), token.name(), token.value())));
 		try (FileWriter writer = new FileWriter(file)) {
 			writer.write(sb.toString());
 		} catch (IOException e) {
