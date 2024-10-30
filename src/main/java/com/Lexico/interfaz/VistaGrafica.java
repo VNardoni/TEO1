@@ -170,8 +170,8 @@ public class VistaGrafica {
 				.forEach(token -> sb.append(String.format("%-" + columnWidth + "s\t%-" + columnWidth + "s\t\n", token.value(), token.name())));
 		tokenList.stream()
 				.filter(token -> constValidTokenNames.contains(token.name()))
+				.filter(this::validateTokenValue)
 				.forEach(token -> {
-					if(validateTokenValue(token))
 						sb.append(String.format("%-" + columnWidth + "s\t%-" + columnWidth + "s\t%-" + columnWidth + "s\n", "_" + token.value(), token.name(), token.value()));
 				});
 		try (FileWriter writer = new FileWriter(file)) {
