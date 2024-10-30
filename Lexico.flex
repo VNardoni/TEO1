@@ -17,6 +17,7 @@ LETRA_MAYUSCULA = [A-ZÑ]
 LETRA = {LETRA_MINUSCULA}|{LETRA_MAYUSCULA}
 ESPACIO = [ \t\n\r\f]+
 CONST_STRING = "\"" ~ "\""
+CONST_STRING_ERROR = "'" ~ "'"
 CONST_NUM_REAL = {DIGITO}*"."{DIGITO}+|{DIGITO}+"."{DIGITO}*
 CONST_NUM_INT = {DIGITO}+
 CONST_BASE_BIN = "0b"(0|1)+
@@ -79,5 +80,6 @@ WRITE = "WRITE" ({ID}|{CONST_NUM_INT}|{CONST_NUM_REAL}|{CONST_STRING}|{CONST_BAS
     {ID}                    { return new Symbol(49, new TokenObject("ID", yytext())); }
     {COMENTARIOS}           { }
     {ESPACIO}               { }
+    {CONST_STRING_ERROR}    { return new Symbol(1001, new TokenObject("ERROR", yytext())); }
 }
 [^]                         { return new Symbol(1000, new TokenObject("ERROR", yytext())); }

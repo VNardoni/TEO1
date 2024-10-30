@@ -170,12 +170,25 @@ public class VistaGrafica {
 				.forEach(token -> sb.append(String.format("%-" + columnWidth + "s\t%-" + columnWidth + "s\t\n", token.value(), token.name())));
 		tokenList.stream()
 				.filter(token -> constValidTokenNames.contains(token.name()))
-				.forEach(token -> sb.append(String.format("%-" + columnWidth + "s\t%-" + columnWidth + "s\t%-" + columnWidth + "s\n", "_" + token.value(), token.name(), token.value())));
+				.forEach(token -> {
+					if(validateTokenValue(token))
+						sb.append(String.format("%-" + columnWidth + "s\t%-" + columnWidth + "s\t%-" + columnWidth + "s\n", "_" + token.value(), token.name(), token.value()));
+				});
 		try (FileWriter writer = new FileWriter(file)) {
 			writer.write(sb.toString());
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(frame, "Error al guardar el archivo", "Error", JOptionPane.ERROR_MESSAGE);
 		}
+	}
+
+	private boolean validateTokenValue(TokenObject token) {
+        return switch (token.name()) {
+            case "CTE_STR" -> token.value().length() <= 30;
+            case "CTE_F" ->
+                    Float.parseFloat(token.value()) >= -Float.MAX_VALUE && Float.parseFloat(token.value()) <= Float.MAX_VALUE;
+            case "CTE_E" -> Integer.parseInt(token.value()) >= -32768 && Integer.parseInt(token.value()) <= 32767;
+            default -> true;
+        };
 	}
 
 }

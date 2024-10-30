@@ -10,8 +10,11 @@ PROGRAM.SECTION
 
     WRITE "@sdADaSjfla%dfg"
     const_string ::= "prueba constante string"
+    const_string_single_comilla ::= 'prueba string comilla simple'
+    const_string_too_long ::= "prueba constante string greater than 30 chars"
     const_float ::= 30.5
     const_integer ::= 55
+    const_integer_too_big ::= 555555
     const_binario ::= 0b011
 
     //*

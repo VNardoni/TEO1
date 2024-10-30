@@ -8,8 +8,11 @@ a                                       	ID
 a                                       	ID                                      	
 a                                       	ID                                      	
 const_string                            	ID                                      	
+const_string_single_comilla             	ID                                      	
+const_string_too_long                   	ID                                      	
 const_float                             	ID                                      	
 const_integer                           	ID                                      	
+const_integer_too_big                   	ID                                      	
 const_binario                           	ID                                      	
 a                                       	ID                                      	
 b                                       	ID                                      	
