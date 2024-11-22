@@ -1,0 +1,39 @@
+package com.Sintactico.Ejemplo.cup;
+
+import java.util.ArrayList;
+import java.util.List;
+import java_cup.runtime.*;
+
+parser_code
+{:
+    /**Metodo al que se llama automaticamente ante algun error sintactico*/
+    public void syntax_error(Symbol s){
+        System.out.println("Error en la linea " + (s.right+1) + " columna " + s.left + ". " + s + " no reconocido. valor " + s.value);
+    }
+:}
+
+action code
+{:
+:}
+
+/*Declaracion de terminales*/
+terminal ID, CONST_INT, ASIGN, PAR_A, PAR_C, OP_SUMA, OP_RESTA, OP_DIV, OP_POR;
+
+/*Declaracion de No Terminales*/
+non terminal pgm , sentencias, sentencia, sentenciaasig, expresion, termino, factor;
+
+start with pgm;
+
+pgm ::= sentencias {: System.out.println("pgm Regla 0 Compila correctamente llegando al simbolo start"; :)};
+
+sentencias ::= sentencias sentencia {: System.out.println("[Regla 1] Sentencias"); :} | sentencia{: System.out.println("[Regla 2] Sentencia"); :};
+
+sentencia ::= sentenciaasig {: System.out.println("[Regla 3] Sentencia Asig"); :};
+
+sentenciaasig ::= ID ASIGN expresion {: System.out.println("[Regla 4] Id asigna expresion"); :};
+
+expresion ::= expresion OP_SUMA termino {: System.out.println("[Regla 5] E+T"); :} | expresion OP_RESTA termino {: System.out.println("[Regla 6] E-T"); :} | termino {: System.out.println("[Regla 7] Termino"); :};
+
+termino ::= expresion OP_POR factor {: System.out.println("[Regla 8] T*F"); :} | termino:t OP_DIV factor:f {: System.out.println("[Regla 9] T/F"); RESULT = t+div+f :} | factor:f {: System.out.println("[Regla 10] Factor valor = " + f); :};
+
+factor ::= ID:id {: System.out.println("[Regla 11] Variable valor = " + id); RESULT = id; :} | CONST_INT:ent {: System.out.println("[Regla 12] Constante valor = " + ent); RESULT = ent :} | PAR_A expresion PAR_C {: System.out.println("[Regla 13] Parentesis expresion Parentesis"); :};
