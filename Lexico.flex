@@ -16,14 +16,14 @@ LETRA_MINUSCULA = [a-zñ]
 LETRA_MAYUSCULA = [A-ZÑ]
 LETRA = {LETRA_MINUSCULA}|{LETRA_MAYUSCULA}
 ESPACIO = [ \t\n\r\f]+
-CONST_STRING = "\"" ~ "\""
-CONST_STRING_ERROR = "'" ~ "'"
+CONST_STRING_ERROR = "'"([^'\n])"'"
+CONST_STRING = \"([^\"\n])*\" 
 CONST_NUM_REAL = {DIGITO}*"."{DIGITO}+|{DIGITO}+"."{DIGITO}*
 CONST_NUM_INT = {DIGITO}+
 CONST_BASE_BIN = "0b"(0|1)+
+ID_ERROR = _({LETRA}|{DIGITO}|_)*
 ID = {LETRA_MINUSCULA}({LETRA}|{DIGITO}|_)*
 COMENTARIOS = "//*" ~ "//*" ~ "*//" ~ "*//" | "//*" ~ "*//"
-WRITE = "WRITE" ({ID}|{CONST_NUM_INT}|{CONST_NUM_REAL}|{CONST_STRING}|{CONST_BASE_BIN})*
 
 %%
 
@@ -44,6 +44,7 @@ WRITE = "WRITE" ({ID}|{CONST_NUM_INT}|{CONST_NUM_REAL}|{CONST_STRING}|{CONST_BAS
     "FLOAT"                 { return new Symbol(15, new TokenObject("FLOAT", yytext())); }
     "INT"                   { return new Symbol(16, new TokenObject("INT", yytext())); }
     "STRING"                { return new Symbol(17, new TokenObject("STRING", yytext())); }
+    "WRITE"                 { return new Symbol(48, new TokenObject("WRITE", yytext())); }
 
     "\""                    { return new Symbol(18, new TokenObject("Comillas", yytext())); }
     "{"                     { return new Symbol(19, new TokenObject("Llave abierta", yytext())); }
@@ -71,15 +72,21 @@ WRITE = "WRITE" ({ID}|{CONST_NUM_INT}|{CONST_NUM_REAL}|{CONST_STRING}|{CONST_BAS
     "-"                     { return new Symbol(41, new TokenObject("Resta", yytext())); }
     "*"                     { return new Symbol(42, new TokenObject("Multiplicación", yytext())); }
     "/"                     { return new Symbol(43, new TokenObject("División", yytext())); }
-
-    {CONST_STRING}          { return new Symbol(44, new TokenObject("CTE_STR", yytext())); }
+    
+    {CONST_STRING} {
+        if (yytext().length() - 2 <= 30) { // Verifica el límite de 30 caracteres
+            return new Symbol(44, new TokenObject("CTE_STR", yytext()));
+        } else {
+            return new Symbol(1003, new TokenObject("ERROR", yytext()));
+        }
+    }
     {CONST_NUM_REAL}        { return new Symbol(45, new TokenObject("CTE_F", yytext())); }
     {CONST_NUM_INT}         { return new Symbol(46, new TokenObject("CTE_E", yytext())); }
     {CONST_BASE_BIN}        { return new Symbol(47, new TokenObject("CTE_B", yytext())); }
-    {WRITE}                 { return new Symbol(48, new TokenObject("WRITE", yytext())); }
     {ID}                    { return new Symbol(49, new TokenObject("ID", yytext())); }
     {COMENTARIOS}           { }
     {ESPACIO}               { }
     {CONST_STRING_ERROR}    { return new Symbol(1001, new TokenObject("ERROR", yytext())); }
+    {ID_ERROR}           	{ return new Symbol(1002, new TokenObject("ERROR", yytext())); }
 }
 [^]                         { return new Symbol(1000, new TokenObject("ERROR", yytext())); }
