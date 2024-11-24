@@ -1,0 +1,126 @@
+package com.Lexico.FlexLexico;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java_cup.runtime.*;
+
+// Código del parser
+parser code
+{:
+    /** Método llamado automáticamente ante errores sintácticos */
+    public void syntax_error(Symbol s) {
+        System.out.println("Error en la línea " + (s.right + 1) + ", columna " + s.left + ". Símbolo no reconocido: " + s.value);
+    }
+:}
+
+// Código adicional para manejar reglas
+action code
+{:
+    List<Object> result = new ArrayList<>();
+    ArrayList<TokenObject> tokenList = new ArrayList<>();
+    ArrayList<RuleObject> rulesList = new ArrayList<>();
+
+    public void addNewRule(int id, String start, RuleItem... rules) {
+        ArrayList<RuleItem> rulesTemp = new ArrayList();
+        rulesTemp.addAll(Arrays.asList(rules));
+        rulesList.add(new RuleObject(id, start, rulesTemp));
+    }
+:}
+
+// Terminales
+terminal String While, If, Then, Else, Endif, Not, And, Or,
+                Declare_section, Enddeclare_section, Program_section, Endprogram_section,
+                Asign_comp,
+                Float, Int, String,
+                Llave_abierta, Llave_cerrada, Parentesis_abierto, Parentesis_cerrado, Corchete_abierto, Corchete_cerrado,
+                Asignacion, Menor_que, Mayor_que, Mayor_o_igual_que, Menor_o_igual_que, Igual, Diferente,
+                Asign_mult, Punto_y_coma, Dos_puntos, Coma,
+                Suma, Resta, Multiplicacion, Division,
+                Cte_s, Cte_f, Cte_e, Cte_b, Write, Id;
+
+// No terminales
+non terminal START, DECLARESECTION, DECLARACIONES , DECLARACION, ITEMS, TIPO,
+             PROGRAMSECTION, PROGRAMA, PROGRAMSECTION_WRITE, PROGRAM_WRITE,
+             SENTENCIA, ITERACION, SELECCION, CONDICION, CONDICIONAL, COMPARACION, COMPARADOR,
+             EXPRESION, TERMINO, FACTOR,
+             ASIGNACION, SALIDA, TEXTO, ASIGNACIONCOMPLEJA, ASIGN, OTRA_ASIGN, ASIGN_DERECHA;
+
+start with START;
+
+// Producción inicial
+START ::= DECLARESECTION {:
+                            addNewRule(1, "START -> ", new RuleItem(RuleType.NT, "DECLARESECTION"));
+                            RESULT = new TokenRulesObject(tokenList, rulesList);
+                        :};
+
+// Declaraciones
+DECLARESECTION ::= Declare_section:ds DECLARACIONES Enddeclare_section:eds {:
+                    tokenList.add(new TokenObject("DECLARE_SECTION", ds));
+                    tokenList.add(new TokenObject("ENDDECLARE_SECTION", eds));
+                    addNewRule(2, "DECLARESECTION -> ",
+                        new RuleItem(RuleType.T, ds),
+                        new RuleItem(RuleType.NT, "DECLARACIONES"),
+                        new RuleItem(RuleType.T, eds)
+                    );
+                :};
+
+DECLARACIONES ::= DECLARACION DECLARACIONES {:
+                    addNewRule(3, "DECLARACIONES -> ",
+                        new RuleItem(RuleType.NT, "DECLARACION"),
+                        new RuleItem(RuleType.NT, "DECLARACIONES")
+                    );
+                :}
+                | DECLARACION {:
+                    addNewRule(4, "DECLARACIONES -> ",
+                        new RuleItem(RuleType.NT, "DECLARACION")
+                    );
+                :};
+
+DECLARACION ::= Corchete_abierto:ca ITEMS Corchete_cerrado:cc {:
+                tokenList.add(new TokenObject("Corchete_abierto", ca));
+                tokenList.add(new TokenObject("Corchete_cerrado", cc));
+                addNewRule(5, "DECLARACION -> ",
+                    new RuleItem(RuleType.T, ca),
+                    new RuleItem(RuleType.NT, "ITEMS"),
+                    new RuleItem(RuleType.T, cc)
+                );
+            :};
+
+ITEMS ::=   Id:id Coma:c ITEMS Coma:cc TIPO {:
+                tokenList.add(new TokenObject("Coma", c));
+                tokenList.add(new TokenObject("Coma", cc));
+                addNewRule(6, "ITEMS -> ",
+                    new RuleItem(RuleType.T, id),
+                    new RuleItem(RuleType.T, c),
+                    new RuleItem(RuleType.NT, "ITEMS"),
+                    new RuleItem(RuleType.T, cc),
+                    new RuleItem(RuleType.NT, "TIPO")
+                );
+            :}
+            | Id:id Corchete_cerrado:cc Asign_mult:am Corchete_abierto:ca TIPO {:
+                tokenList.add(new TokenObject("ID", id));
+                tokenList.add(new TokenObject("Corchete_cerrado", cc));
+                tokenList.add(new TokenObject("Asign_mult", am));
+                tokenList.add(new TokenObject("Corchete_abierto", ca));
+                addNewRule(7, "ITEMS -> ",
+                    new RuleItem(RuleType.T, id),
+                    new RuleItem(RuleType.T, cc),
+                    new RuleItem(RuleType.T, am),
+                    new RuleItem(RuleType.T, ca),
+                    new RuleItem(RuleType.NT, "TIPO")
+                );
+           :};
+
+TIPO ::= Float:f {:
+            tokenList.add(new TokenObject("FLOAT", f));
+            addNewRule(8, "TIPO -> ", new RuleItem(RuleType.T, f));
+        :}
+      | Int:i {:
+          tokenList.add(new TokenObject("INT", i));
+          addNewRule(9, "TIPO -> ", new RuleItem(RuleType.T, i));
+      :}
+      | String:s {:
+          tokenList.add(new TokenObject("STRING", s));
+          addNewRule(10, "TIPO -> ", new RuleItem(RuleType.T, s));
+      :};

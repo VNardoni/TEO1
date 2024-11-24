@@ -11,14 +11,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.Lexico.FlexLexico.FlexLexico;
-import com.Lexico.FlexLexico.TokenObject;
+import com.Lexico.FlexLexico.*;
 
 public class VistaGrafica {
 
 	private JFrame frame;
 	private JTextArea inputTextArea;
 	private JTextPane consoleArea;
+	private JTextPane consoleArea2;
 	private File archivoSeleccionado;
 
 	public static void main(String[] args) {
@@ -39,16 +39,29 @@ public class VistaGrafica {
 	}
 
 	private void initialize() {
-		ArrayList<TokenObject> tokenList = new ArrayList<TokenObject>();
+		ArrayList<TokenObject> tokenList = new ArrayList<>();
+		ArrayList<RuleObject> rulesList = new ArrayList<>();
+
 		frame = new JFrame();
-		frame.setBounds(100, 100, 822, 860);
+		frame.setBounds(100, 100, 822, 1060);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
 		JPanel contenedorPrincipal = new JPanel();
-		contenedorPrincipal.setBounds(0, 0, 806, 800);
+		contenedorPrincipal.setBounds(0, 0, 806, 1000); // Adjusted height to fit both console areas
 		frame.getContentPane().add(contenedorPrincipal);
 		contenedorPrincipal.setLayout(null);
+
+		JButton btnCargarArchivo = new JButton("Cargar archivo");
+		btnCargarArchivo.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		btnCargarArchivo.setBounds(286, 64, 234, 42);
+		contenedorPrincipal.add(btnCargarArchivo);
+
+		JLabel lblTitulo = new JLabel("Analizador Léxico Gráfico");
+		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTitulo.setFont(new Font("Segoe UI Semibold", Font.BOLD, 30));
+		lblTitulo.setBounds(140, 11, 527, 42);
+		contenedorPrincipal.add(lblTitulo);
 
 		inputTextArea = new JTextArea();
 		JScrollPane scrollPane = new JScrollPane(inputTextArea);
@@ -64,25 +77,23 @@ public class VistaGrafica {
 		consoleScrollPane.setBounds(28, 530, 750, 200);
 		contenedorPrincipal.add(consoleScrollPane);
 
-		JButton btnCargarArchivo = new JButton("Cargar archivo");
-		btnCargarArchivo.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		btnCargarArchivo.setBounds(286, 64, 234, 42);
-		contenedorPrincipal.add(btnCargarArchivo);
-
-		JLabel lblTitulo = new JLabel("Analizador Léxico Gráfico");
-		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTitulo.setFont(new Font("Segoe UI Semibold", Font.BOLD, 30));
-		lblTitulo.setBounds(140, 11, 527, 42);
-		contenedorPrincipal.add(lblTitulo);
+		consoleArea2 = new JTextPane();
+		consoleArea2.setEditable(false);
+		consoleArea2.setBackground(new Color(30, 30, 30));
+		consoleArea2.setForeground(Color.GREEN);
+		consoleArea2.setFont(new Font("Monospaced", Font.PLAIN, 14));
+		JScrollPane consoleScrollPane2 = new JScrollPane(consoleArea2);
+		consoleScrollPane2.setBounds(28, 740, 750, 200); // Same size as consoleScrollPane
+		contenedorPrincipal.add(consoleScrollPane2);
 
 		JButton btnClear = new JButton("Limpiar");
 		btnClear.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		btnClear.setBounds(200, 743, 180, 40);
+		btnClear.setBounds(200, 960, 180, 40);
 		contenedorPrincipal.add(btnClear);
 
 		JButton btnAnalizar = new JButton("Analizar");
 		btnAnalizar.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		btnAnalizar.setBounds(440, 743, 180, 40);
+		btnAnalizar.setBounds(440, 960, 180, 40);
 		contenedorPrincipal.add(btnAnalizar);
 
 		btnCargarArchivo.addActionListener(new ActionListener() {
@@ -102,10 +113,14 @@ public class VistaGrafica {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					tokenList.clear();
-					tokenList.addAll(FlexLexico.analizar(inputTextArea.getText()));
+					rulesList.clear();
+					TokenRulesObject tokenRules = FlexLexico.analizar(inputTextArea.getText());
+					tokenList.addAll(tokenRules.tokenList());
+					rulesList.addAll(tokenRules.rulesList());
 					printTokens(tokenList);
+					printRules(rulesList);
 					saveTsFile(tokenList);
-				} catch (IOException e1) {
+				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
 			}
@@ -157,6 +172,28 @@ public class VistaGrafica {
 		sb.append("</body></html>");
 		consoleArea.setContentType("text/html");
 		consoleArea.setText(sb.toString());
+	}
+
+	private void printRules(ArrayList<RuleObject> rulesList) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<html><body>");
+		for (RuleObject rule : rulesList) {
+			sb.append("<span style='color:#ADD8E6;'>[RULE ").append(rule.ruleNumber()).append("]: </span>")
+					.append("<span style='color:yellow;'>")
+					.append(rule.start());
+			for (RuleItem item : rule.rules()) {
+				sb.append(" ");
+				sb.append(item.type().equals(RuleType.T)
+							? "<span style='color:orange;'>"
+							: "<span style='color:yellow;'>"
+				).append(item.value());
+			}
+			sb.append("</span>")
+			.append("<br>");
+		}
+		sb.append("</body></html>");
+		consoleArea2.setContentType("text/html");
+		consoleArea2.setText(sb.toString());
 	}
 
 	private void saveTsFile(ArrayList<TokenObject> tokenList) {
