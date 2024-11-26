@@ -1,3 +1,5 @@
 package com.Lexico.FlexLexico;
 
-public record TokenObject(String name, String value) {}
+import java.util.Optional;
+
+public record TokenObject(String name, String value, Optional<String> type) {}

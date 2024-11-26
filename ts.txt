@@ -1,3 +1,38 @@
-NOMBRE                                  	TOKEN                                   	VALOR                                   
-b1                                      	ID                                      	
-p3                                      	ID                                      	
+NOMBRE                                  	TOKEN                                   	TIPO                                    	VALOR                                   
+b1                                      	ID                                      	FLOAT                                   	
+a1                                      	ID                                      	INT                                     	
+p3                                      	ID                                      	FLOAT                                   	
+p2                                      	ID                                      	FLOAT                                   	
+p1                                      	ID                                      	INT                                     	
+_37                                     	Cte_i                                   	                                        	37                                      
+_3.7                                    	Cte_f                                   	                                        	3.7                                     
+_0b00                                   	Cte_b                                   	                                        	0b00                                    
+_37                                     	Cte_i                                   	                                        	37                                      
+_3                                      	Cte_i                                   	                                        	3                                       
+_37                                     	Cte_i                                   	                                        	37                                      
+_3                                      	Cte_i                                   	                                        	3                                       
+_37                                     	Cte_i                                   	                                        	37                                      
+_3                                      	Cte_i                                   	                                        	3                                       
+_37                                     	Cte_i                                   	                                        	37                                      
+_3                                      	Cte_i                                   	                                        	3                                       
+_37                                     	Cte_i                                   	                                        	37                                      
+_3                                      	Cte_i                                   	                                        	3                                       
+_37                                     	Cte_i                                   	                                        	37                                      
+_37                                     	Cte_i                                   	                                        	37                                      
+_1                                      	Cte_i                                   	                                        	1                                       
+_37                                     	Cte_i                                   	                                        	37                                      
+_37                                     	Cte_i                                   	                                        	37                                      
+_40                                     	Cte_i                                   	                                        	40                                      
+_35                                     	Cte_i                                   	                                        	35                                      
+_1                                      	Cte_i                                   	                                        	1                                       
+_2                                      	Cte_i                                   	                                        	2                                       
+_3                                      	Cte_i                                   	                                        	3                                       
+_1                                      	Cte_i                                   	                                        	1                                       
+_2                                      	Cte_i                                   	                                        	2                                       
+_3                                      	Cte_i                                   	                                        	3                                       
+_2                                      	Cte_i                                   	                                        	2                                       
+_3                                      	Cte_i                                   	                                        	3                                       
+_1                                      	Cte_i                                   	                                        	1                                       
+_1                                      	Cte_i                                   	                                        	1                                       
+_2.5                                    	Cte_f                                   	                                        	2.5                                     
+_"hola"                                 	Cte_s                                   	                                        	"hola"                                  

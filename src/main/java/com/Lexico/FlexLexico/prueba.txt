@@ -1,4 +1,0 @@
-DECLARE.SECTION
-    [a1, b1] := [FLOAT, INT]
-    [p1, p2, p3] := [FLOAT,FLOAT,INT]
-ENDDECLARE.SECTION

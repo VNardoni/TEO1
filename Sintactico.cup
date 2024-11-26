@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java_cup.runtime.*;
+import java.util.Optional;
 
 // Código del parser
 parser code
@@ -20,12 +21,30 @@ action code
     List<Object> result = new ArrayList<>();
     ArrayList<TokenObject> tokenList = new ArrayList<>();
     ArrayList<RuleObject> rulesList = new ArrayList<>();
+    String lastType = "";
 
     public void addNewRule(int id, String start, RuleItem... rules) {
         ArrayList<RuleItem> rulesTemp = new ArrayList();
         rulesTemp.addAll(Arrays.asList(rules));
         rulesList.add(new RuleObject(id, start, rulesTemp));
     }
+
+    public RuleItem addTerminalRuleItem(String terminal) {
+        return new RuleItem(RuleType.T, terminal);
+    }
+
+    public RuleItem addNonTerminalRuleItem(String nonTerminal) {
+        return new RuleItem(RuleType.NT, nonTerminal);
+    }
+
+    public String getLastType() {
+        return lastType;
+    }
+
+    public void setLastType(String type) {
+        lastType = type;
+    }
+
 :}
 
 // Terminales
@@ -37,90 +56,542 @@ terminal String While, If, Then, Else, Endif, Not, And, Or,
                 Asignacion, Menor_que, Mayor_que, Mayor_o_igual_que, Menor_o_igual_que, Igual, Diferente,
                 Asign_mult, Punto_y_coma, Dos_puntos, Coma,
                 Suma, Resta, Multiplicacion, Division,
-                Cte_s, Cte_f, Cte_e, Cte_b, Write, Id;
+                Cte_s, Cte_f, Cte_i, Cte_b, Write, Id;
 
 // No terminales
-non terminal START, DECLARESECTION, DECLARACIONES , DECLARACION, ITEMS, TIPO,
-             PROGRAMSECTION, PROGRAMA, PROGRAMSECTION_WRITE, PROGRAM_WRITE,
+non terminal START, DECLARE_SECTION, DECLARACIONES , DECLARACION, ITEMS, TIPO,
+             PROGRAM_SECTION, PROGRAM, PROGRAM_SECTION_WRITE, PROGRAM_WRITE,
              SENTENCIA, ITERACION, SELECCION, CONDICION, CONDICIONAL, COMPARACION, COMPARADOR,
              EXPRESION, TERMINO, FACTOR,
-             ASIGNACION, SALIDA, TEXTO, ASIGNACIONCOMPLEJA, ASIGN, OTRA_ASIGN, ASIGN_DERECHA;
+             ASIGNACION, SALIDA, TEXTO, ASIGNACION_COMPLEJA, ASIGN, OTRA_ASIGN, ASIGN_DERECHA;
 
 start with START;
 
 // Producción inicial
-START ::= DECLARESECTION {:
-                            addNewRule(1, "START -> ", new RuleItem(RuleType.NT, "DECLARESECTION"));
-                            RESULT = new TokenRulesObject(tokenList, rulesList);
-                        :};
+START ::= DECLARE_SECTION PROGRAM_SECTION {:
+                addNewRule(1, "START -> ",
+                    addNonTerminalRuleItem("DECLARE_SECTION"),
+                    addNonTerminalRuleItem("PROGRAM_SECTION")
+                );
+                RESULT = new TokenRulesObject(tokenList, rulesList);
+            :}
+            | PROGRAM_SECTION_WRITE {:
+                addNewRule(2, "START -> ",
+                    addNonTerminalRuleItem("PROGRAM_SECTION_WRITE")
+                );
+                RESULT = new TokenRulesObject(tokenList, rulesList);
+            :};
 
 // Declaraciones
-DECLARESECTION ::= Declare_section:ds DECLARACIONES Enddeclare_section:eds {:
-                    tokenList.add(new TokenObject("DECLARE_SECTION", ds));
-                    tokenList.add(new TokenObject("ENDDECLARE_SECTION", eds));
-                    addNewRule(2, "DECLARESECTION -> ",
-                        new RuleItem(RuleType.T, ds),
-                        new RuleItem(RuleType.NT, "DECLARACIONES"),
-                        new RuleItem(RuleType.T, eds)
+DECLARE_SECTION ::= Declare_section:ds DECLARACIONES Enddeclare_section:eds {:
+                    tokenList.add(new TokenObject("DECLARE_SECTION", ds, Optional.empty()));
+                    tokenList.add(new TokenObject("ENDDECLARE_SECTION", eds, Optional.empty()));
+                    addNewRule(3, "DECLARESECTION -> ",
+                        addTerminalRuleItem(ds),
+                        addNonTerminalRuleItem("DECLARACIONES"),
+                        addTerminalRuleItem(eds)
                     );
                 :};
 
 DECLARACIONES ::= DECLARACION DECLARACIONES {:
-                    addNewRule(3, "DECLARACIONES -> ",
-                        new RuleItem(RuleType.NT, "DECLARACION"),
-                        new RuleItem(RuleType.NT, "DECLARACIONES")
+                    addNewRule(4, "DECLARACIONES -> ",
+                        addNonTerminalRuleItem("DECLARACION"),
+                        addNonTerminalRuleItem("DECLARACIONES")
                     );
                 :}
                 | DECLARACION {:
-                    addNewRule(4, "DECLARACIONES -> ",
-                        new RuleItem(RuleType.NT, "DECLARACION")
+                    addNewRule(5, "DECLARACIONES -> ",
+                        addNonTerminalRuleItem("DECLARACION")
                     );
                 :};
 
 DECLARACION ::= Corchete_abierto:ca ITEMS Corchete_cerrado:cc {:
-                tokenList.add(new TokenObject("Corchete_abierto", ca));
-                tokenList.add(new TokenObject("Corchete_cerrado", cc));
-                addNewRule(5, "DECLARACION -> ",
-                    new RuleItem(RuleType.T, ca),
-                    new RuleItem(RuleType.NT, "ITEMS"),
-                    new RuleItem(RuleType.T, cc)
+                tokenList.add(new TokenObject("Corchete_abierto", ca, Optional.empty()));
+                tokenList.add(new TokenObject("Corchete_cerrado", cc, Optional.empty()));
+                addNewRule(6, "DECLARACION -> ",
+                    addTerminalRuleItem(ca),
+                    addNonTerminalRuleItem("ITEMS"),
+                    addTerminalRuleItem(cc)
                 );
             :};
 
 ITEMS ::=   Id:id Coma:c ITEMS Coma:cc TIPO {:
-                tokenList.add(new TokenObject("Coma", c));
-                tokenList.add(new TokenObject("Coma", cc));
-                addNewRule(6, "ITEMS -> ",
-                    new RuleItem(RuleType.T, id),
-                    new RuleItem(RuleType.T, c),
-                    new RuleItem(RuleType.NT, "ITEMS"),
-                    new RuleItem(RuleType.T, cc),
-                    new RuleItem(RuleType.NT, "TIPO")
+                tokenList.add(new TokenObject("ID", id, Optional.of(getLastType())));
+                tokenList.add(new TokenObject("Coma", c, Optional.empty()));
+                tokenList.add(new TokenObject("Coma", cc, Optional.empty()));
+                addNewRule(7, "ITEMS -> ",
+                    addTerminalRuleItem(id),
+                    addTerminalRuleItem(c),
+                    addNonTerminalRuleItem("ITEMS"),
+                    addTerminalRuleItem(cc),
+                    addNonTerminalRuleItem("TIPO")
                 );
             :}
             | Id:id Corchete_cerrado:cc Asign_mult:am Corchete_abierto:ca TIPO {:
-                tokenList.add(new TokenObject("ID", id));
-                tokenList.add(new TokenObject("Corchete_cerrado", cc));
-                tokenList.add(new TokenObject("Asign_mult", am));
-                tokenList.add(new TokenObject("Corchete_abierto", ca));
-                addNewRule(7, "ITEMS -> ",
-                    new RuleItem(RuleType.T, id),
-                    new RuleItem(RuleType.T, cc),
-                    new RuleItem(RuleType.T, am),
-                    new RuleItem(RuleType.T, ca),
-                    new RuleItem(RuleType.NT, "TIPO")
+                tokenList.add(new TokenObject("ID", id, Optional.of(getLastType())));
+                tokenList.add(new TokenObject("Corchete_cerrado", cc, Optional.empty()));
+                tokenList.add(new TokenObject("Asign_mult", am, Optional.empty()));
+                tokenList.add(new TokenObject("Corchete_abierto", ca, Optional.empty()));
+                addNewRule(8, "ITEMS -> ",
+                    addTerminalRuleItem(id),
+                    addTerminalRuleItem(cc),
+                    addTerminalRuleItem(am),
+                    addTerminalRuleItem(ca),
+                    addNonTerminalRuleItem("TIPO")
                 );
            :};
 
 TIPO ::= Float:f {:
-            tokenList.add(new TokenObject("FLOAT", f));
-            addNewRule(8, "TIPO -> ", new RuleItem(RuleType.T, f));
+            setLastType("FLOAT");
+            tokenList.add(new TokenObject("FLOAT", f, Optional.empty()));
+            addNewRule(9, "TIPO -> ",
+                addTerminalRuleItem(f)
+            );
         :}
       | Int:i {:
-          tokenList.add(new TokenObject("INT", i));
-          addNewRule(9, "TIPO -> ", new RuleItem(RuleType.T, i));
+          setLastType("INT");
+          tokenList.add(new TokenObject("INT", i, Optional.empty()));
+          addNewRule(10, "TIPO -> ",
+                addTerminalRuleItem(i)
+            );
       :}
       | String:s {:
-          tokenList.add(new TokenObject("STRING", s));
-          addNewRule(10, "TIPO -> ", new RuleItem(RuleType.T, s));
+          setLastType("STRING");
+          tokenList.add(new TokenObject("STRING", s, Optional.empty()));
+          addNewRule(11, "TIPO -> ",
+                addTerminalRuleItem(s)
+            );
       :};
+
+// Programa
+PROGRAM_SECTION ::= Program_section:ps PROGRAM Endprogram_section:eps {:
+                    tokenList.add(new TokenObject("PROGRAM_SECTION", ps, Optional.empty()));
+                    tokenList.add(new TokenObject("ENDPROGRAM_SECTION", eps, Optional.empty()));
+                    addNewRule(12, "PROGRAM_SECTION -> ",
+                        addTerminalRuleItem(ps),
+                        addNonTerminalRuleItem("PROGRAM"),
+                        addTerminalRuleItem(eps)
+                    );
+                :};
+
+PROGRAM ::= SENTENCIA Punto_y_coma:pyc PROGRAM {:
+                addNewRule(13, "PROGRAM -> ",
+                    addNonTerminalRuleItem("SENTENCIA"),
+                    addTerminalRuleItem(pyc),
+                    addNonTerminalRuleItem("PROGRAM")
+                );
+            :}
+            | SENTENCIA Punto_y_coma {:
+                addNewRule(14, "PROGRAM -> ",
+                    addNonTerminalRuleItem("SENTENCIA"),
+                    addTerminalRuleItem("Punto_y_coma")
+                );
+            :};
+
+SENTENCIA ::= ASIGNACION {:
+                addNewRule(15, "ASIGNACION -> ",
+                    addNonTerminalRuleItem("ASIGNACION")
+                );
+            :}
+            | ITERACION {:
+                addNewRule(16, "ITERACION -> ",
+                    addNonTerminalRuleItem("ITERACION")
+                );
+            :}
+            | SELECCION {:
+                addNewRule(17, "SELECCION -> ",
+                    addNonTerminalRuleItem("SELECCION")
+                );
+            :}
+            | ASIGNACION_COMPLEJA {:
+                  addNewRule(18, "ASIGNACION_COMPLEJA -> ",
+                      addNonTerminalRuleItem("ASIGNACION_COMPLEJA")
+                  );
+            :}
+            | SALIDA {:
+                addNewRule(19, "SALIDA -> ",
+                    addNonTerminalRuleItem("SALIDA")
+                );
+            :};
+
+ASIGNACION ::= Id:id Asignacion:a EXPRESION {:
+                tokenList.add(new TokenObject("ASIGNACION", a, Optional.empty()));
+                addNewRule(20, "ASIGNACION -> ",
+                    addTerminalRuleItem(id),
+                    addTerminalRuleItem(a),
+                    addNonTerminalRuleItem("EXPRESION")
+                );
+            :};
+
+EXPRESION ::= EXPRESION Suma:s TERMINO {:
+                tokenList.add(new TokenObject("Suma", s, Optional.empty()));
+                addNewRule(21, "EXPRESION -> ",
+                    addNonTerminalRuleItem("EXPRESION"),
+                    addTerminalRuleItem(s),
+                    addNonTerminalRuleItem("TERMINO")
+                );
+            :}
+            | EXPRESION Resta:r TERMINO {:
+                tokenList.add(new TokenObject("Resta", r, Optional.empty()));
+                addNewRule(22, "EXPRESION -> ",
+                    addNonTerminalRuleItem("EXPRESION"),
+                    addTerminalRuleItem(r),
+                    addNonTerminalRuleItem("TERMINO")
+                );
+            :}
+            | TERMINO {:
+              addNewRule(23, "EXPRESION -> ",
+                  addNonTerminalRuleItem("TERMINO")
+              );
+          :};
+
+TERMINO ::= TERMINO Multiplicacion:m FACTOR {:
+                tokenList.add(new TokenObject("Multiplicacion", m, Optional.empty()));
+                addNewRule(24, "TERMINO -> ",
+                    addNonTerminalRuleItem("TERMINO"),
+                    addTerminalRuleItem(m),
+                    addNonTerminalRuleItem("FACTOR")
+                );
+            :}
+            | TERMINO Division:d FACTOR {:
+                tokenList.add(new TokenObject("Division", d, Optional.empty()));
+                addNewRule(25, "TERMINO -> ",
+                    addNonTerminalRuleItem("TERMINO"),
+                    addTerminalRuleItem(d),
+                    addNonTerminalRuleItem("FACTOR")
+                );
+            :}
+            | FACTOR {:
+              addNewRule(26, "TERMINO -> ",
+                  addNonTerminalRuleItem("FACTOR")
+              );
+          :};
+
+FACTOR ::= Parentesis_abierto:pa EXPRESION Parentesis_cerrado:pc {:
+                tokenList.add(new TokenObject("Parentesis_abierto", pa, Optional.empty()));
+                tokenList.add(new TokenObject("Parentesis_cerrado", pc, Optional.empty()));
+                addNewRule(27, "FACTOR -> ",
+                    addTerminalRuleItem(pa),
+                    addNonTerminalRuleItem("EXPRESION"),
+                    addTerminalRuleItem(pc)
+                );
+            :}
+            | Id:id {:
+                addNewRule(28, "FACTOR -> ",
+                    addTerminalRuleItem(id)
+                );
+            :}
+            | Cte_f:f {:
+                tokenList.add(new TokenObject("Cte_f", f, Optional.empty()));
+                addNewRule(29, "FACTOR -> ",
+                    addTerminalRuleItem(f)
+                );
+            :}
+            | Cte_i:e {:
+                tokenList.add(new TokenObject("Cte_i", e, Optional.empty()));
+                addNewRule(30, "FACTOR -> ",
+                    addTerminalRuleItem(e)
+                );
+            :}
+            | Cte_b:b {:
+                tokenList.add(new TokenObject("Cte_b", b, Optional.empty()));
+                addNewRule(31, "FACTOR -> ",
+                    addTerminalRuleItem(b)
+                );
+            :};
+
+ITERACION ::= While:w Parentesis_abierto:pa CONDICION Parentesis_cerrado:pc Llave_abierta:la PROGRAM Llave_cerrada:lc {:
+                tokenList.add(new TokenObject("While", w, Optional.empty()));
+                tokenList.add(new TokenObject("Parentesis_abierto", pa, Optional.empty()));
+                tokenList.add(new TokenObject("Parentesis_cerrado", pc, Optional.empty()));
+                tokenList.add(new TokenObject("Llave_abierta", la, Optional.empty()));
+                tokenList.add(new TokenObject("Llave_cerrada", lc, Optional.empty()));
+                addNewRule(32, "ITERACION -> ",
+                    addTerminalRuleItem(w),
+                    addTerminalRuleItem(pa),
+                    addNonTerminalRuleItem("CONDICION"),
+                    addTerminalRuleItem(pc),
+                    addTerminalRuleItem(la),
+                    addNonTerminalRuleItem("PROGRAM"),
+                    addTerminalRuleItem(lc)
+                );
+            :};
+
+CONDICION ::= Parentesis_abierto:pa COMPARACION Parentesis_cerrado:pc {:
+                tokenList.add(new TokenObject("Parentesis_abierto", pa, Optional.empty()));
+                tokenList.add(new TokenObject("Parentesis_cerrado", pc, Optional.empty()));
+                addNewRule(33, "CONDICION -> ",
+                    addTerminalRuleItem(pa),
+                    addNonTerminalRuleItem("COMPARACION"),
+                    addTerminalRuleItem(pc)
+                );
+            :}
+            | Parentesis_abierto:pa COMPARACION Parentesis_cerrado:pc CONDICIONAL Parentesis_abierto:pa2 COMPARACION Parentesis_cerrado:pc2 {:
+                tokenList.add(new TokenObject("Parentesis_abierto", pa, Optional.empty()));
+                tokenList.add(new TokenObject("Parentesis_cerrado", pc, Optional.empty()));
+                tokenList.add(new TokenObject("Parentesis_abierto", pa2, Optional.empty()));
+                tokenList.add(new TokenObject("Parentesis_cerrado", pc2, Optional.empty()));
+                addNewRule(34, "CONDICION -> ",
+                    addTerminalRuleItem(pa),
+                    addNonTerminalRuleItem("COMPARACION"),
+                    addTerminalRuleItem(pc),
+                    addNonTerminalRuleItem("CONDICIONAL"),
+                    addTerminalRuleItem(pa2),
+                    addNonTerminalRuleItem("COMPARACION"),
+                    addTerminalRuleItem(pc2)
+                );
+            :}
+            | Not:n Parentesis_abierto:pa COMPARACION Parentesis_cerrado:pc {:
+                tokenList.add(new TokenObject("Not", n, Optional.empty()));
+                tokenList.add(new TokenObject("Parentesis_abierto", pa, Optional.empty()));
+                tokenList.add(new TokenObject("Parentesis_cerrado", pc, Optional.empty()));
+                addNewRule(35, "CONDICION -> ",
+                    addTerminalRuleItem(n),
+                    addTerminalRuleItem(pa),
+                    addNonTerminalRuleItem("COMPARACION"),
+                    addTerminalRuleItem(pc)
+                );
+            :}
+            | COMPARACION CONDICIONAL COMPARACION {:
+                addNewRule(36, "CONDICION -> ",
+                    addNonTerminalRuleItem("COMPARACION"),
+                    addNonTerminalRuleItem("CONDICIONAL"),
+                    addNonTerminalRuleItem("COMPARACION")
+                );
+            :}
+             | COMPARACION {:
+                addNewRule(37, "COMPARACION -> ",
+                    addNonTerminalRuleItem("COMPARACION")
+                );
+            :};
+
+COMPARACION ::= EXPRESION COMPARADOR EXPRESION {:
+                addNewRule(38, "COMPARACION -> ",
+                    addNonTerminalRuleItem("EXPRESION"),
+                    addNonTerminalRuleItem("COMPARADOR"),
+                    addNonTerminalRuleItem("EXPRESION")
+                );
+            :};
+
+COMPARADOR ::= Menor_que:m {:
+                tokenList.add(new TokenObject("Menor_que", m, Optional.empty()));
+                addNewRule(39, "COMPARADOR -> ",
+                    addTerminalRuleItem(m)
+                );
+            :}
+            | Mayor_que:m {:
+                tokenList.add(new TokenObject("Mayor_que", m, Optional.empty()));
+                addNewRule(40, "COMPARADOR -> ",
+                    addTerminalRuleItem(m)
+                );
+            :}
+            | Mayor_o_igual_que:m {:
+                tokenList.add(new TokenObject("Mayor_o_igual_que", m, Optional.empty()));
+                addNewRule(41, "COMPARADOR -> ",
+                    addTerminalRuleItem(m)
+                );
+            :}
+            | Menor_o_igual_que:m {:
+                tokenList.add(new TokenObject("Menor_o_igual_que", m, Optional.empty()));
+                addNewRule(42, "COMPARADOR -> ",
+                    addTerminalRuleItem(m)
+                );
+            :}
+            | Igual:m {:
+                tokenList.add(new TokenObject("Igual", m, Optional.empty()));
+                addNewRule(43, "COMPARADOR -> ",
+                    addTerminalRuleItem(m)
+                );
+            :}
+            | Diferente:m {:
+                tokenList.add(new TokenObject("Diferente", m, Optional.empty()));
+                addNewRule(44, "COMPARADOR -> ",
+                    addTerminalRuleItem(m)
+                );
+            :};
+
+CONDICIONAL ::= And:a {:
+                tokenList.add(new TokenObject("And", a, Optional.empty()));
+                addNewRule(45, "CONDICIONAL -> ",
+                    addTerminalRuleItem(a)
+                );
+            :}
+            | Or:o {:
+                tokenList.add(new TokenObject("Or", o, Optional.empty()));
+                addNewRule(46, "CONDICIONAL -> ",
+                    addTerminalRuleItem(o)
+                );
+            :};
+
+SELECCION ::= If:i Parentesis_abierto:pa CONDICION Parentesis_cerrado:pc Then:t PROGRAM Else:e PROGRAM Endif:ei {:
+                tokenList.add(new TokenObject("If", i, Optional.empty()));
+                tokenList.add(new TokenObject("Parentesis_abierto", pa, Optional.empty()));
+                tokenList.add(new TokenObject("Parentesis_cerrado", pc, Optional.empty()));
+                tokenList.add(new TokenObject("Then", t, Optional.empty()));
+                tokenList.add(new TokenObject("Else", e, Optional.empty()));
+                tokenList.add(new TokenObject("Endif", ei, Optional.empty()));
+                addNewRule(47, "SELECCION -> ",
+                    addTerminalRuleItem(i),
+                    addTerminalRuleItem(pa),
+                    addNonTerminalRuleItem("CONDICION"),
+                    addTerminalRuleItem(pc),
+                    addTerminalRuleItem(t),
+                    addNonTerminalRuleItem("PROGRAM"),
+                    addTerminalRuleItem(e),
+                    addNonTerminalRuleItem("PROGRAM"),
+                    addTerminalRuleItem(ei)
+                );
+            :}
+            | If:i Parentesis_abierto:pa CONDICION Parentesis_cerrado:pc Then:t PROGRAM Endif:ei {:
+                tokenList.add(new TokenObject("If", i, Optional.empty()));
+                tokenList.add(new TokenObject("Parentesis_abierto", pa, Optional.empty()));
+                tokenList.add(new TokenObject("Parentesis_cerrado", pc, Optional.empty()));
+                tokenList.add(new TokenObject("Then", t, Optional.empty()));
+                tokenList.add(new TokenObject("Endif", ei, Optional.empty()));
+                addNewRule(48, "SELECCION -> ",
+                    addTerminalRuleItem(i),
+                    addTerminalRuleItem(pa),
+                    addNonTerminalRuleItem("CONDICION"),
+                    addTerminalRuleItem(pc),
+                    addTerminalRuleItem(t),
+                    addNonTerminalRuleItem("PROGRAM"),
+                    addTerminalRuleItem(ei)
+                );
+            :};
+
+ASIGNACION_COMPLEJA ::= Asign_comp:ac Parentesis_abierto:pa ASIGN Parentesis_cerrado:pc {:
+                tokenList.add(new TokenObject("Asign_comp", ac, Optional.empty()));
+                tokenList.add(new TokenObject("Parentesis_abierto", pa, Optional.empty()));
+                tokenList.add(new TokenObject("Parentesis_cerrado", pc, Optional.empty()));
+                addNewRule(49, "ASIGNACION_COMPLEJA -> ",
+                    addTerminalRuleItem(ac),
+                    addTerminalRuleItem(pa),
+                    addNonTerminalRuleItem("ASIGN"),
+                    addTerminalRuleItem(pc)
+                );
+            :};
+
+ASIGN ::= Corchete_abierto:ca Id:id OTRA_ASIGN ASIGN_DERECHA Corchete_cerrado:cc {:
+                tokenList.add(new TokenObject("Corchete_abierto", ca, Optional.empty()));
+                tokenList.add(new TokenObject("Corchete_cerrado", cc, Optional.empty()));
+                addNewRule(50, "ASIGN -> ",
+                    addTerminalRuleItem(ca),
+                    addTerminalRuleItem(id),
+                    addNonTerminalRuleItem("OTRA_ASIGN"),
+                    addNonTerminalRuleItem("ASIGN_DERECHA"),
+                    addTerminalRuleItem(cc)
+                );
+            :};
+
+OTRA_ASIGN ::= Coma:c Id:id OTRA_ASIGN ASIGN_DERECHA Coma:cc {:
+                tokenList.add(new TokenObject("Coma", c, Optional.empty()));
+                tokenList.add(new TokenObject("Coma", cc, Optional.empty()));
+                addNewRule(51, "OTRA_ASIGN -> ",
+                    addTerminalRuleItem(c),
+                    addTerminalRuleItem(id),
+                    addNonTerminalRuleItem("OTRA_ASIGN"),
+                    addNonTerminalRuleItem("ASIGN_DERECHA"),
+                    addTerminalRuleItem(cc)
+                );
+            :}
+            | Corchete_cerrado:cc Dos_puntos:dp Corchete_abierto:ca {:
+                tokenList.add(new TokenObject("Corchete_cerrado", cc, Optional.empty()));
+                tokenList.add(new TokenObject("Dos_puntos", dp, Optional.empty()));
+                tokenList.add(new TokenObject("Corchete_abierto", ca, Optional.empty()));
+                addNewRule(52, "OTRA_ASIGN -> ",
+                    addTerminalRuleItem(cc),
+                    addTerminalRuleItem(dp),
+                    addTerminalRuleItem(ca)
+                );
+            :};
+
+ASIGN_DERECHA ::= Id:id {:
+                      addNewRule(53, "FACTOR -> ",
+                          addTerminalRuleItem(id)
+                      );
+                  :}
+                  | Cte_f:f {:
+                      tokenList.add(new TokenObject("Cte_f", f, Optional.empty()));
+                      addNewRule(54, "FACTOR -> ",
+                          addTerminalRuleItem(f)
+                      );
+                  :}
+                  | Cte_i:e {:
+                      tokenList.add(new TokenObject("Cte_i", e, Optional.empty()));
+                      addNewRule(55, "FACTOR -> ",
+                          addTerminalRuleItem(e)
+                      );
+                  :}
+                  | Cte_b:b {:
+                      tokenList.add(new TokenObject("Cte_b", b, Optional.empty()));
+                      addNewRule(56, "FACTOR -> ",
+                          addTerminalRuleItem(b)
+                      );
+                  :}
+                  | Cte_s:s {:
+                    tokenList.add(new TokenObject("Cte_s", s, Optional.empty()));
+                    addNewRule(57, "FACTOR -> ",
+                        addTerminalRuleItem(s)
+                    );
+                :};
+
+SALIDA ::= Write:w Parentesis_abierto:pa TEXTO Parentesis_cerrado:pc {:
+                tokenList.add(new TokenObject("Write", w, Optional.empty()));
+                tokenList.add(new TokenObject("Parentesis_abierto", pa, Optional.empty()));
+                tokenList.add(new TokenObject("Parentesis_cerrado", pc, Optional.empty()));
+                addNewRule(58, "SALIDA -> ",
+                    addTerminalRuleItem(w),
+                    addTerminalRuleItem(pa),
+                    addNonTerminalRuleItem("TEXTO"),
+                    addTerminalRuleItem(pc)
+                );
+            :};
+
+TEXTO ::= Cte_s:s TEXTO {:
+                tokenList.add(new TokenObject("Cte_s", s, Optional.empty()));
+                addNewRule(59, "TEXTO -> ",
+                    addTerminalRuleItem(s),
+                    addNonTerminalRuleItem("TEXTO")
+                );
+            :}
+            | Id:id TEXTO {:
+                addNewRule(60, "TEXTO -> ",
+                    addTerminalRuleItem(id),
+                    addNonTerminalRuleItem("TEXTO")
+                );
+            :}
+            | Cte_s:s {:
+                tokenList.add(new TokenObject("Cte_s", s, Optional.empty()));
+                addNewRule(61, "TEXTO -> ",
+                    addTerminalRuleItem(s)
+                );
+            :}
+            | Id:id {:
+                addNewRule(62, "TEXTO -> ",
+                    addTerminalRuleItem(id)
+                );
+            :};
+
+PROGRAM_SECTION_WRITE ::= Program_section:ps PROGRAM_WRITE Endprogram_section:eps {:
+                    tokenList.add(new TokenObject("PROGRAM_SECTION", ps, Optional.empty()));
+                    tokenList.add(new TokenObject("ENDPROGRAM_SECTION", eps, Optional.empty()));
+                    addNewRule(63, "PROGRAM_SECTION_WRITE -> ",
+                        addTerminalRuleItem(ps),
+                        addNonTerminalRuleItem("PROGRAM_WRITE"),
+                        addTerminalRuleItem(eps)
+                    );
+                :};
+
+PROGRAM_WRITE ::= SALIDA Punto_y_coma:pyc PROGRAM_WRITE {:
+                addNewRule(64, "PROGRAM_WRITE -> ",
+                    addNonTerminalRuleItem("SALIDA"),
+                    addTerminalRuleItem(pyc),
+                    addNonTerminalRuleItem("PROGRAM_WRITE")
+                );
+            :}
+            | SALIDA Punto_y_coma {:
+                addNewRule(65, "PROGRAM_WRITE -> ",
+                    addNonTerminalRuleItem("SALIDA"),
+                    addTerminalRuleItem("Punto_y_coma")
+                );
+            :};
