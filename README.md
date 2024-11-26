@@ -35,9 +35,9 @@ FlexLexico is a Java-based lexical analyzer project. It reads and processes a fi
 
 To build the .jar file, use the following Maven command:
 
-   ```sh
-   mvn clean package
-   ```
+```sh
+mvn clean package
+```
 
 The resulting .jar file will be located in the target directory
 
@@ -45,9 +45,9 @@ The resulting .jar file will be located in the target directory
 
 To run the .jar file, use the following command:
 
-   ```sh
-   java -jar .\FlexLexico-1.0.jar
-   ```
+```sh
+java -jar .\FlexLexico-2.0.jar
+```
 
 ## Usage
 
@@ -63,4 +63,5 @@ The UI will allow you to load the input file or write in the text area and displ
 
 ## Anexo
 
-[Link Documento REGEX](https://docs.google.com/document/d/1_P1gy3LVajhrFVl_u1IOgZa34uSg5c2fvrE33nPvs7E/edit?usp=sharing)
+[Link Documento REGEX](https://docs.google.com/document/d/1_P1gy3LVajhrFVl_u1IOgZa34uSg5c2fvrE33nPvs7E/edit?usp=sharing)  
+[Link Documento GLC](https://docs.google.com/document/d/1ycB5KUmSl6u1RavsXuVSEvb_l2KPiQhOIwfzFiT8jUQ/edit?usp=sharing)
