@@ -10,15 +10,16 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.awt.*;
 
-import com.Lexico.FlexLexico.FlexLexico;
-import com.Lexico.FlexLexico.TokenObject;
+import com.Lexico.FlexLexico.*;
 
 public class VistaGrafica {
 
 	private JFrame frame;
 	private JTextArea inputTextArea;
 	private JTextPane consoleArea;
+	private JTextPane consoleArea2;
 	private File archivoSeleccionado;
 
 	public static void main(String[] args) {
@@ -39,52 +40,73 @@ public class VistaGrafica {
 	}
 
 	private void initialize() {
-		ArrayList<TokenObject> tokenList = new ArrayList<TokenObject>();
+		ArrayList<TokenObject> tokenList = new ArrayList<>();
+		ArrayList<RuleObject> rulesList = new ArrayList<>();
+
 		frame = new JFrame();
-		frame.setBounds(100, 100, 822, 860);
+		frame.setBounds(100, 100, 1024, 720); // Ajustamos la altura máxima del JFrame
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+		frame.getContentPane().setLayout(new BorderLayout());
 
-		JPanel contenedorPrincipal = new JPanel();
-		contenedorPrincipal.setBounds(0, 0, 806, 800);
-		frame.getContentPane().add(contenedorPrincipal);
-		contenedorPrincipal.setLayout(null);
+		// Título
+		JLabel lblTitulo = new JLabel("Analizador Léxico Gráfico", SwingConstants.CENTER);
+		lblTitulo.setFont(new Font("Segoe UI Semibold", Font.BOLD, 30));
+		frame.getContentPane().add(lblTitulo, BorderLayout.NORTH);
 
+		// Panel principal dividido
+		JSplitPane splitPanePrincipal = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		splitPanePrincipal.setDividerLocation(600); // Ancho inicial del área de texto
+		frame.getContentPane().add(splitPanePrincipal, BorderLayout.CENTER);
+
+		// Área de entrada de texto
 		inputTextArea = new JTextArea();
-		JScrollPane scrollPane = new JScrollPane(inputTextArea);
-		scrollPane.setBounds(28, 120, 750, 400);
-		contenedorPrincipal.add(scrollPane);
+		JScrollPane scrollPaneInput = new JScrollPane(inputTextArea);
+		splitPanePrincipal.setLeftComponent(scrollPaneInput);
 
+		// Panel de consolas dividido
+		JSplitPane splitPaneConsolas = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		splitPaneConsolas.setDividerLocation(350); // Altura inicial para la primera consola
+		splitPanePrincipal.setRightComponent(splitPaneConsolas);
+
+		// Consola 1
 		consoleArea = new JTextPane();
 		consoleArea.setEditable(false);
 		consoleArea.setBackground(new Color(30, 30, 30));
 		consoleArea.setForeground(Color.GREEN);
 		consoleArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		JScrollPane consoleScrollPane = new JScrollPane(consoleArea);
-		consoleScrollPane.setBounds(28, 530, 750, 200);
-		contenedorPrincipal.add(consoleScrollPane);
+		splitPaneConsolas.setTopComponent(consoleScrollPane);
 
+		// Consola 2
+		consoleArea2 = new JTextPane();
+		consoleArea2.setEditable(false);
+		consoleArea2.setBackground(new Color(30, 30, 30));
+		consoleArea2.setForeground(Color.GREEN);
+		consoleArea2.setFont(new Font("Monospaced", Font.PLAIN, 14));
+		JScrollPane consoleScrollPane2 = new JScrollPane(consoleArea2);
+		splitPaneConsolas.setBottomComponent(consoleScrollPane2);
+
+		// Panel inferior para los botones
+		JPanel panelBotones = new JPanel();
+		panelBotones.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
+		frame.getContentPane().add(panelBotones, BorderLayout.SOUTH);
+
+		// Botón "Cargar Archivo"
 		JButton btnCargarArchivo = new JButton("Cargar archivo");
 		btnCargarArchivo.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		btnCargarArchivo.setBounds(286, 64, 234, 42);
-		contenedorPrincipal.add(btnCargarArchivo);
+		panelBotones.add(btnCargarArchivo);
 
-		JLabel lblTitulo = new JLabel("Analizador Léxico Gráfico");
-		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTitulo.setFont(new Font("Segoe UI Semibold", Font.BOLD, 30));
-		lblTitulo.setBounds(140, 11, 527, 42);
-		contenedorPrincipal.add(lblTitulo);
-
+		// Botón "Limpiar"
 		JButton btnClear = new JButton("Limpiar");
 		btnClear.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		btnClear.setBounds(200, 743, 180, 40);
-		contenedorPrincipal.add(btnClear);
+		panelBotones.add(btnClear);
 
+		// Botón "Analizar"
 		JButton btnAnalizar = new JButton("Analizar");
 		btnAnalizar.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		btnAnalizar.setBounds(440, 743, 180, 40);
-		contenedorPrincipal.add(btnAnalizar);
+		panelBotones.add(btnAnalizar);
 
+		// Listeners
 		btnCargarArchivo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cargarArchivo();
@@ -95,6 +117,7 @@ public class VistaGrafica {
 			public void actionPerformed(ActionEvent e) {
 				inputTextArea.setText("");
 				consoleArea.setText("");
+				consoleArea2.setText(""); // Limpiar también consoleArea2
 			}
 		});
 
@@ -102,15 +125,21 @@ public class VistaGrafica {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					tokenList.clear();
-					tokenList.addAll(FlexLexico.analizar(inputTextArea.getText()));
+					rulesList.clear();
+					TokenRulesObject tokenRules = FlexLexico.analizar(inputTextArea.getText());
+					tokenList.addAll(tokenRules.tokenList());
+					rulesList.addAll(tokenRules.rulesList());
 					printTokens(tokenList);
+					printRules(rulesList);
 					saveTsFile(tokenList);
-				} catch (IOException e1) {
+				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
 			}
 		});
 	}
+
+
 
 	/**
 	 * Método para cargar un archivo de texto y mostrar su contenido en el
@@ -159,20 +188,42 @@ public class VistaGrafica {
 		consoleArea.setText(sb.toString());
 	}
 
+	private void printRules(ArrayList<RuleObject> rulesList) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<html><body>");
+		for (RuleObject rule : rulesList) {
+			sb.append("<span style='color:#ADD8E6;'>[RULE ").append(rule.ruleNumber()).append("]: </span>")
+					.append("<span style='color:yellow;'>")
+					.append(rule.start());
+			for (RuleItem item : rule.rules()) {
+				sb.append(" ");
+				sb.append(item.type().equals(RuleType.T)
+							? "<span style='color:orange;'>"
+							: "<span style='color:yellow;'>"
+				).append(item.value());
+			}
+			sb.append("</span>")
+			.append("<br>");
+		}
+		sb.append("</body></html>");
+		consoleArea2.setContentType("text/html");
+		consoleArea2.setText(sb.toString());
+	}
+
 	private void saveTsFile(ArrayList<TokenObject> tokenList) {
 		int columnWidth = 40; // Define a fixed width for each column
 		File file = new File("ts.txt");
-		List<String> constValidTokenNames = Arrays.asList("CTE_STR", "CTE_F", "CTE_E", "CTE_B");
+		List<String> constValidTokenNames = Arrays.asList("Cte_s", "Cte_f", "Cte_i", "Cte_b");
 		StringBuilder sb = new StringBuilder();
-		sb.append(String.format("%-" + columnWidth + "s\t%-" + columnWidth + "s\t%-" + columnWidth + "s\n", "NOMBRE", "TOKEN", "VALOR"));
+		sb.append(String.format("%-" + columnWidth + "s\t%-" + columnWidth + "s\t%-" + columnWidth + "s\t%-" + columnWidth + "s\n", "NOMBRE", "TOKEN", "TIPO", "VALOR"));
 		tokenList.stream()
 				.filter(token -> token.name().equals("ID"))
-				.forEach(token -> sb.append(String.format("%-" + columnWidth + "s\t%-" + columnWidth + "s\t\n", token.value(), token.name())));
+				.forEach(token -> sb.append(String.format("%-" + columnWidth + "s\t%-" + columnWidth +  "s\t%-" + columnWidth + "s\t\n", token.value(), token.name(), token.type().isPresent() ? token.type().get() : "")));
 		tokenList.stream()
 				.filter(token -> constValidTokenNames.contains(token.name()))
 				.filter(this::validateTokenValue)
 				.forEach(token -> {
-						sb.append(String.format("%-" + columnWidth + "s\t%-" + columnWidth + "s\t%-" + columnWidth + "s\n", "_" + token.value(), token.name(), token.value()));
+						sb.append(String.format("%-" + columnWidth + "s\t%-" + columnWidth + "s\t%-" + columnWidth + "s\t%-" + columnWidth + "s\n", "_" + token.value(), token.name(), "" , token.value()));
 				});
 		try (FileWriter writer = new FileWriter(file)) {
 			writer.write(sb.toString());

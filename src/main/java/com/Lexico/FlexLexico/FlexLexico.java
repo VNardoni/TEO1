@@ -1,21 +1,14 @@
 package com.Lexico.FlexLexico;
 
-import java_cup.runtime.Symbol;
-
-import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
 
 public class FlexLexico {
 
-	public static ArrayList<TokenObject> analizar(String inputText) throws IOException {
-		ArrayList<TokenObject> tokenList = new ArrayList<>();
+	public static TokenRulesObject analizar(String inputText) throws Exception {
 		StringReader stringReader = new StringReader(inputText);
 		Lexico Lexer = new Lexico(stringReader);
-		for (Symbol token = Lexer.next_token(); token.sym != 0; token = Lexer.next_token()) {
-			tokenList.add((TokenObject) token.value);
-		}
-		return tokenList;
+		parser sintactico = new parser(Lexer);
+        return (TokenRulesObject) sintactico.parse().value;
 	}
 
 }

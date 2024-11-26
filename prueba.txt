@@ -1,31 +1,43 @@
 DECLARE.SECTION
     [a1, b1] := [FLOAT, INT]
-    [p1, p2, p3] := [FLOAT,FLOAT,INT]
+    [p1, p2, p3] := [FLOAT, FLOAT, INT]
 ENDDECLARE.SECTION
 
 PROGRAM.SECTION
-    a::= 99999.99
-    a::= 99.
-    a::= .9999
+	variableE = 37;
+	variableF = 3.7;
+	variableB = 0b00;
+	variableID = idhola;
+	variableExpSum = 37 + 3;
+	variableExpSum = 37 - 3;
+	variableExpMult = 37 * 3;
+	variableExpDiv = 37 / 3;
+	variableExpPar = (37 / 3);
 
-    WRITE "@sdADaSjfla%dfg"
-    const_string ::= "prueba constante string"
-    const_string_single_comilla ::= 'prueba string comilla simple'
-    const_string_too_long ::= "prueba constante string greater than 30 chars"
-    const_float ::= 30.5
-    const_integer ::= 55
-    const_integer_too_big ::= 555555
-    const_binario ::= 0b011
+	WHILE ( 37 == 37 ) {
+		test = 1;
+	};
+	WHILE (( 37 == 37 ) AND (40 < 35)) {
+		test = 1;
+	};
 
-    //*
-        IF (a <= 30)
-            b = "correcto" //* asignacion string *//
-        ENDIF
-    *//
+	IF ( 2 == 3) THEN
+		test2 = 1;
+	ENDIF;
 
-    AsigComp([a, b, c, d] : [1, b, 2.5, z]) //* a=1, b=b, c=2.5, d=z *//
+	IF (( 2 == 3) AND ( 2 < 3 )) THEN
+		test2 = 1;
+	ENDIF;
 
-    const_string_con_enie ::= "ÑANDU"
-    va_a_fallar::=ç
+	AsigComp([a, b, c, d] : [1, e, 2.5, z]);
+
+	WRITE ( "hola" );
+	WRITE ( varId );
+
+	//* this is a comment *//
+
+	//*
+		//* this is a nested comment *//
+	*//
 
 ENDPROGRAM.SECTION
