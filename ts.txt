@@ -1,9 +1,9 @@
 NOMBRE                                  	TOKEN                                   	TIPO                                    	VALOR                                   
-b1                                      	ID                                      	FLOAT                                   	
-a1                                      	ID                                      	INT                                     	
-p3                                      	ID                                      	FLOAT                                   	
+b1                                      	ID                                      	INT                                     	
+a1                                      	ID                                      	FLOAT                                   	
+p3                                      	ID                                      	INT                                     	
 p2                                      	ID                                      	FLOAT                                   	
-p1                                      	ID                                      	INT                                     	
+p1                                      	ID                                      	FLOAT                                   	
 _37                                     	Cte_i                                   	                                        	37                                      
 _3.7                                    	Cte_f                                   	                                        	3.7                                     
 _0b00                                   	Cte_b                                   	                                        	0b00                                    

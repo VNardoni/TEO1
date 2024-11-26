@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java_cup.runtime.*;
 import java.util.Optional;
+import java.util.Stack;
+import java.util.stream.Collectors;
 
 // Código del parser
 parser code
@@ -21,8 +23,8 @@ action code
     List<Object> result = new ArrayList<>();
     ArrayList<TokenObject> tokenList = new ArrayList<>();
     ArrayList<RuleObject> rulesList = new ArrayList<>();
-    String lastType = "";
-
+	Stack<String> typesStack = new Stack<String>();
+	
     public void addNewRule(int id, String start, RuleItem... rules) {
         ArrayList<RuleItem> rulesTemp = new ArrayList();
         rulesTemp.addAll(Arrays.asList(rules));
@@ -36,14 +38,26 @@ action code
     public RuleItem addNonTerminalRuleItem(String nonTerminal) {
         return new RuleItem(RuleType.NT, nonTerminal);
     }
-
-    public String getLastType() {
-        return lastType;
+    
+    public void addType(String type){
+    	typesStack.add(type);
     }
-
-    public void setLastType(String type) {
-        lastType = type;
+    
+    public String getType(){
+    	return typesStack.pop();
     }
+    
+	public void sortTypes(){
+	
+	    if (typesStack.isEmpty()) return;
+	    List<TokenObject> tokenIds = tokenList.stream()
+	        .filter(token -> token.name().equals("ID") && !token.type().isPresent())
+	        .collect(Collectors.toList());
+	
+	    if (typesStack.size() == tokenIds.size()) {
+	        tokenIds.forEach(tokenId -> tokenId.setType(Optional.of(getType())));
+	    }
+	}
 
 :}
 
@@ -93,13 +107,13 @@ DECLARE_SECTION ::= Declare_section:ds DECLARACIONES Enddeclare_section:eds {:
                     );
                 :};
 
-DECLARACIONES ::= DECLARACION DECLARACIONES {:
+DECLARACIONES ::= DECLARACION DECLARACIONES {:					
                     addNewRule(4, "DECLARACIONES -> ",
                         addNonTerminalRuleItem("DECLARACION"),
                         addNonTerminalRuleItem("DECLARACIONES")
                     );
                 :}
-                | DECLARACION {:
+                | DECLARACION {:             
                     addNewRule(5, "DECLARACIONES -> ",
                         addNonTerminalRuleItem("DECLARACION")
                     );
@@ -107,7 +121,8 @@ DECLARACIONES ::= DECLARACION DECLARACIONES {:
 
 DECLARACION ::= Corchete_abierto:ca ITEMS Corchete_cerrado:cc {:
                 tokenList.add(new TokenObject("Corchete_abierto", ca, Optional.empty()));
-                tokenList.add(new TokenObject("Corchete_cerrado", cc, Optional.empty()));
+                tokenList.add(new TokenObject("Corchete_cerrado", cc, Optional.empty())); 
+                sortTypes();             
                 addNewRule(6, "DECLARACION -> ",
                     addTerminalRuleItem(ca),
                     addNonTerminalRuleItem("ITEMS"),
@@ -116,9 +131,9 @@ DECLARACION ::= Corchete_abierto:ca ITEMS Corchete_cerrado:cc {:
             :};
 
 ITEMS ::=   Id:id Coma:c ITEMS Coma:cc TIPO {:
-                tokenList.add(new TokenObject("ID", id, Optional.of(getLastType())));
+                tokenList.add(new TokenObject("ID", id, Optional.empty()));
                 tokenList.add(new TokenObject("Coma", c, Optional.empty()));
-                tokenList.add(new TokenObject("Coma", cc, Optional.empty()));
+                tokenList.add(new TokenObject("Coma", cc, Optional.empty()));               
                 addNewRule(7, "ITEMS -> ",
                     addTerminalRuleItem(id),
                     addTerminalRuleItem(c),
@@ -128,7 +143,7 @@ ITEMS ::=   Id:id Coma:c ITEMS Coma:cc TIPO {:
                 );
             :}
             | Id:id Corchete_cerrado:cc Asign_mult:am Corchete_abierto:ca TIPO {:
-                tokenList.add(new TokenObject("ID", id, Optional.of(getLastType())));
+                tokenList.add(new TokenObject("ID", id, Optional.empty()));
                 tokenList.add(new TokenObject("Corchete_cerrado", cc, Optional.empty()));
                 tokenList.add(new TokenObject("Asign_mult", am, Optional.empty()));
                 tokenList.add(new TokenObject("Corchete_abierto", ca, Optional.empty()));
@@ -142,21 +157,21 @@ ITEMS ::=   Id:id Coma:c ITEMS Coma:cc TIPO {:
            :};
 
 TIPO ::= Float:f {:
-            setLastType("FLOAT");
+            addType("FLOAT");
             tokenList.add(new TokenObject("FLOAT", f, Optional.empty()));
             addNewRule(9, "TIPO -> ",
                 addTerminalRuleItem(f)
             );
         :}
       | Int:i {:
-          setLastType("INT");
+          addType("INT");
           tokenList.add(new TokenObject("INT", i, Optional.empty()));
           addNewRule(10, "TIPO -> ",
                 addTerminalRuleItem(i)
             );
       :}
       | String:s {:
-          setLastType("STRING");
+          addType("STRING");
           tokenList.add(new TokenObject("STRING", s, Optional.empty()));
           addNewRule(11, "TIPO -> ",
                 addTerminalRuleItem(s)
