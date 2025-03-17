@@ -211,15 +211,16 @@ public class VistaGrafica {
 	}
 
 	private void saveTsFile(ArrayList<TokenObject> tokenList) {
+		ArrayList<TokenObject> uniqueTokens = removeDuplicatesByName(tokenList);
 		int columnWidth = 40; // Define a fixed width for each column
 		File file = new File("ts.txt");
 		List<String> constValidTokenNames = Arrays.asList("Cte_s", "Cte_f", "Cte_i", "Cte_b");
 		StringBuilder sb = new StringBuilder();
 		sb.append(String.format("%-" + columnWidth + "s\t%-" + columnWidth + "s\t%-" + columnWidth + "s\t%-" + columnWidth + "s\n", "NOMBRE", "TOKEN", "TIPO", "VALOR"));
-		tokenList.stream()
+		uniqueTokens.stream()
 				.filter(token -> token.name().equals("ID"))
 				.forEach(token -> sb.append(String.format("%-" + columnWidth + "s\t%-" + columnWidth +  "s\t%-" + columnWidth + "s\t\n", token.value(), token.name(), token.type().isPresent() ? token.type().get() : "")));
-		tokenList.stream()
+		uniqueTokens.stream()
 				.filter(token -> constValidTokenNames.contains(token.name()))
 				.filter(this::validateTokenValue)
 				.forEach(token -> {
@@ -242,4 +243,13 @@ public class VistaGrafica {
         };
 	}
 
+	private ArrayList<TokenObject> removeDuplicatesByName(ArrayList<TokenObject> tokenList) {
+		ArrayList<TokenObject> uniqueTokens = new ArrayList<>();
+		for (TokenObject token : tokenList) {
+			if (uniqueTokens.stream().noneMatch(t -> t.value().equals(token.value()))) {
+				uniqueTokens.add(token);
+			}
+		}
+		return uniqueTokens;
+	}
 }
